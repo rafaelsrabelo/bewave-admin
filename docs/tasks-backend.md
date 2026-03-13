@@ -35,16 +35,16 @@
 
 ## FASE 3 — Autenticação
 
-- [ ] Criar `src/modules/auth/auth.schema.ts` (Zod: `loginSchema`, `refreshSchema`)
-- [ ] Criar `src/modules/auth/auth.service.ts`
-  - [ ] `login(email, password)` → valida usuário, compara hash, gera tokens
-  - [ ] `refresh(token)` → valida refresh token no Redis, gera novo access token
-  - [ ] `logout(token)` → remove refresh token do Redis
-- [ ] Instalar e configurar `ioredis` para armazenar refresh tokens
-- [ ] Criar `src/modules/auth/auth.controller.ts` (handlers: `login`, `refresh`, `logout`)
-- [ ] Criar `src/modules/auth/auth.routes.ts` e registrar em `app.ts`
-- [ ] Criar `src/shared/middleware/auth.middleware.ts` (verifica Bearer JWT)
-- [ ] Testar: login, refresh token, logout, rota protegida
+- [x] Criar `src/modules/auth/auth.schema.ts` (Zod: `loginSchema`, `refreshSchema`)
+- [x] Criar `src/modules/auth/auth.service.ts`
+  - [x] `login(email, password)` → valida usuário, compara hash, gera tokens
+  - [x] `refresh(token)` → valida refresh token no Redis, gera novo access token
+  - [x] `logout(token)` → remove refresh token do Redis
+- [x] Instalar e configurar `ioredis` para armazenar refresh tokens
+- [x] Criar `src/modules/auth/auth.controller.ts` (handlers: `login`, `refresh`, `logout`)
+- [x] Criar `src/modules/auth/auth.routes.ts` e registrar em `app.ts`
+- [x] Criar `src/shared/middleware/auth.middleware.ts` (verifica Bearer JWT)
+- [x] Testar: login, refresh token, logout, rota protegida
 
 ---
 
@@ -155,4 +155,4 @@
 
 ---
 
-**Progresso:** `18 / 70` tasks concluídas
+**Progresso:** `28 / 70` tasks concluídas
