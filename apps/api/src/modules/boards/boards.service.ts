@@ -20,6 +20,10 @@ export class BoardsService {
             user: { select: { id: true, name: true } },
           },
         },
+        boards: {
+          select: { id: true, name: true },
+          orderBy: { createdAt: 'desc' },
+        },
       },
       orderBy: { createdAt: 'desc' },
     })
