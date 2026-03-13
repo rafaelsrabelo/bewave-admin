@@ -4,6 +4,7 @@ import jwt from '@fastify/jwt'
 import cookie from '@fastify/cookie'
 import { registerErrorHandler } from './shared/middleware/error-handler.js'
 import { authRoutes } from './modules/auth/auth.routes.js'
+import { usersRoutes } from './modules/users/users.routes.js'
 import { env } from './env.js'
 
 export async function buildApp() {
@@ -32,6 +33,7 @@ export async function buildApp() {
   })
 
   await app.register(authRoutes, { prefix: '/api/v1/auth' })
+  await app.register(usersRoutes, { prefix: '/api/v1/users' })
 
   return app
 }

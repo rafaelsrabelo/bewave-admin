@@ -50,17 +50,17 @@
 
 ## FASE 4 — Módulo Usuários
 
-- [ ] Criar `src/modules/users/users.schema.ts` (Zod: `createUser`, `updateUser`, `listUsers`)
-- [ ] Criar `src/modules/users/users.service.ts`
-  - [ ] `list(filters)` → paginado, com filtro por `role` e `isActive`
-  - [ ] `findById(id)` → lança `AppError` se não encontrado
-  - [ ] `create(data)` → hash da senha com bcrypt, verifica email duplicado
-  - [ ] `update(id, data)` → atualiza campos permitidos
-  - [ ] `deactivate(id)` → soft disable (`isActive: false`)
-- [ ] Criar `src/modules/users/users.controller.ts`
-- [ ] Criar `src/modules/users/users.routes.ts` (todas as rotas protegidas por `authenticate`)
-- [ ] Registrar rotas em `app.ts` com prefixo `/api/v1/users`
-- [ ] Testar CRUD completo de usuários
+- [x] Criar `src/modules/users/users.schema.ts` (Zod: `createUser`, `updateUser`, `listUsers`)
+- [x] Criar `src/modules/users/users.service.ts`
+  - [x] `list(filters)` → paginado, com filtro por `role` e `isActive`
+  - [x] `findById(id)` → lança `AppError` se não encontrado
+  - [x] `create(data)` → hash da senha com bcrypt, verifica email duplicado
+  - [x] `update(id, data)` → atualiza campos permitidos
+  - [x] `deactivate(id)` → soft disable (`isActive: false`)
+- [x] Criar `src/modules/users/users.controller.ts`
+- [x] Criar `src/modules/users/users.routes.ts` (todas as rotas protegidas por `authenticate`)
+- [x] Registrar rotas em `app.ts` com prefixo `/api/v1/users`
+- [x] Testar CRUD completo de usuários
 
 ---
 
@@ -155,4 +155,4 @@
 
 ---
 
-**Progresso:** `28 / 70` tasks concluídas
+**Progresso:** `39 / 70` tasks concluídas
