@@ -8,6 +8,7 @@ import { usersRoutes } from './modules/users/users.routes.js'
 import { clientsRoutes } from './modules/clients/clients.routes.js'
 import { boardsRoutes } from './modules/boards/boards.routes.js'
 import { activitiesRoutes } from './modules/activities/activities.routes.js'
+import { financeRoutes } from './modules/finance/finance.routes.js'
 import { env } from './env.js'
 
 export async function buildApp() {
@@ -40,6 +41,7 @@ export async function buildApp() {
   await app.register(clientsRoutes, { prefix: '/api/v1/clients' })
   await app.register(boardsRoutes, { prefix: '/api/v1' })
   await app.register(activitiesRoutes, { prefix: '/api/v1/activities' })
+  await app.register(financeRoutes, { prefix: '/api/v1/finance' })
 
   return app
 }

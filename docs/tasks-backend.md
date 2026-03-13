@@ -117,16 +117,16 @@
 
 ## FASE 8 — Módulo Financeiro
 
-- [ ] Criar schemas Zod: `createFinanceEntry`, `listFinanceEntries`
-- [ ] Criar `src/modules/finance/finance.service.ts`
-  - [ ] `list(filters)` → paginado, filtro por `type`, `category`, `dateRange`
-  - [ ] `create(data)`
-  - [ ] `remove(id)`
-  - [ ] `getSummary(dateRange)` → soma entradas, saídas, saldo
-- [ ] Criar controller e rotas financeiras
-- [ ] `GET /api/v1/finance/summary` → retorna totais do período
-- [ ] Registrar em `app.ts`
-- [ ] Testar registro e resumo financeiro
+- [x] Criar schemas Zod: `createFinanceEntry`, `listFinanceEntries`
+- [x] Criar `src/modules/finance/finance.service.ts`
+  - [x] `list(filters)` → paginado, filtro por `type`, `category`, `dateRange`
+  - [x] `create(data)`
+  - [x] `remove(id)`
+  - [x] `getSummary(dateRange)` → soma entradas, saídas, saldo
+- [x] Criar controller e rotas financeiras
+- [x] `GET /api/v1/finance/summary` → retorna totais do período
+- [x] Registrar em `app.ts`
+- [x] Testar registro e resumo financeiro
 
 ---
 
