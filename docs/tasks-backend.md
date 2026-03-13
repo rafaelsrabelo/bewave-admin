@@ -22,14 +22,14 @@
 
 ## FASE 2 — Plugins e infraestrutura
 
-- [ ] Instalar e configurar `@fastify/cors`
-- [ ] Instalar e configurar `@fastify/jwt`
-- [ ] Instalar e configurar `@fastify/cookie`
-- [ ] Criar `src/shared/errors/app-error.ts` (classe `AppError`)
-- [ ] Criar `src/shared/middleware/error-handler.ts` (hook `setErrorHandler`)
-- [ ] Criar `src/shared/utils/response.ts` (helpers `ok`, `created`, `paginated`)
-- [ ] Criar `src/shared/utils/pagination.ts` (helper para `skip/take` e meta)
-- [ ] Registrar todos os plugins em `app.ts`
+- [x] Instalar e configurar `@fastify/cors`
+- [x] Instalar e configurar `@fastify/jwt`
+- [x] Instalar e configurar `@fastify/cookie`
+- [x] Criar `src/shared/errors/app-error.ts` (classe `AppError`)
+- [x] Criar `src/shared/middleware/error-handler.ts` (hook `setErrorHandler`)
+- [x] Criar `src/shared/utils/response.ts` (helpers `ok`, `created`, `paginated`)
+- [x] Criar `src/shared/utils/pagination.ts` (helper para `skip/take` e meta)
+- [x] Registrar todos os plugins em `app.ts`
 
 ---
 
@@ -155,4 +155,4 @@
 
 ---
 
-**Progresso:** `10 / 70` tasks concluídas
+**Progresso:** `18 / 70` tasks concluídas
