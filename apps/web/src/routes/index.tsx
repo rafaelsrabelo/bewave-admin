@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { PrivateRoute } from './PrivateRoute'
+import { AppShell } from '@/components/layout/AppShell'
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -23,11 +24,18 @@ export function AppRoutes() {
       <Route path="/login" element={<LoginPlaceholder />} />
 
       <Route element={<PrivateRoute />}>
-        <Route path="/dashboard" element={<PlaceholderPage title="Dashboard" />} />
-        <Route path="/users" element={<PlaceholderPage title="Usuários" />} />
-        <Route path="/clients" element={<PlaceholderPage title="Clientes" />} />
-        <Route path="/boards" element={<PlaceholderPage title="Quadros" />} />
-        <Route path="/finance" element={<PlaceholderPage title="Financeiro" />} />
+        <Route element={<AppShell />}>
+          <Route path="/dashboard" element={<PlaceholderPage title="Dashboard" />} />
+          <Route path="/users" element={<PlaceholderPage title="Usuários" />} />
+          <Route path="/users/new" element={<PlaceholderPage title="Novo Usuário" />} />
+          <Route path="/users/:id/edit" element={<PlaceholderPage title="Editar Usuário" />} />
+          <Route path="/clients" element={<PlaceholderPage title="Clientes" />} />
+          <Route path="/clients/new" element={<PlaceholderPage title="Novo Cliente" />} />
+          <Route path="/clients/:id/edit" element={<PlaceholderPage title="Editar Cliente" />} />
+          <Route path="/boards" element={<PlaceholderPage title="Quadros" />} />
+          <Route path="/boards/:id" element={<PlaceholderPage title="Board" />} />
+          <Route path="/finance" element={<PlaceholderPage title="Financeiro" />} />
+        </Route>
       </Route>
 
       <Route path="/" element={<Navigate to="/dashboard" replace />} />

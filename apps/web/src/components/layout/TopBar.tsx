@@ -1,0 +1,83 @@
+import { useLocation, useNavigate } from 'react-router-dom'
+import { LogOut, Moon, Sun, User } from 'lucide-react'
+import { useAuthStore } from '@/stores/auth.store'
+import { useUiStore } from '@/stores/ui.store'
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+
+const pageTitles: Record<string, string> = {
+  '/dashboard': 'Dashboard',
+  '/users': 'Usuários',
+  '/clients': 'Clientes',
+  '/boards': 'Quadros',
+  '/finance': 'Financeiro',
+}
+
+export function TopBar() {
+  const location = useLocation()
+  const navigate = useNavigate()
+  const user = useAuthStore((s) => s.user)
+  const clearAuth = useAuthStore((s) => s.clearAuth)
+  const { theme, toggleTheme } = useUiStore()
+
+  const currentTitle =
+    Object.entries(pageTitles).find(([path]) =>
+      location.pathname.startsWith(path),
+    )?.[1] ?? ''
+
+  function handleLogout() {
+    clearAuth()
+    navigate('/login')
+  }
+
+  return (
+    <header className="flex h-14 items-center justify-between border-b border-border bg-background px-6">
+      <h1 className="text-lg font-semibold text-foreground">{currentTitle}</h1>
+
+      <div className="flex items-center gap-2">
+        <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-8 w-8">
+          {theme === 'dark' ? (
+            <Sun className="h-4 w-4" />
+          ) : (
+            <Moon className="h-4 w-4" />
+          )}
+        </Button>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-8 w-8">
+              <Avatar className="h-7 w-7">
+                <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                  {user?.name?.slice(0, 2).toUpperCase() ?? 'U'}
+                </AvatarFallback>
+              </Avatar>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <div className="px-2 py-1.5">
+              <p className="text-sm font-medium">{user?.name}</p>
+              <p className="text-xs text-muted-foreground">{user?.email}</p>
+            </div>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <User className="mr-2 h-4 w-4" />
+              Perfil
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleLogout} className="text-destructive">
+              <LogOut className="mr-2 h-4 w-4" />
+              Sair
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </header>
+  )
+}

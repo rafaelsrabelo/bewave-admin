@@ -36,21 +36,21 @@
 
 ## FASE 3 — Layout principal
 
-- [ ] Criar `src/components/layout/AppShell.tsx` → wrapper com sidebar + topbar + `<Outlet />`
-- [ ] Criar `src/components/layout/Sidebar.tsx`
-  - [ ] Logo bewave-admin no topo
-  - [ ] Links de navegação: Dashboard, Usuários, Clientes, Quadros, Financeiro
-  - [ ] Highlight da rota ativa
-  - [ ] Botão de collapse (mobile)
-  - [ ] Avatar + nome do usuário logado no rodapé
-- [ ] Criar `src/components/layout/TopBar.tsx`
-  - [ ] Título da página atual
-  - [ ] Toggle dark/light mode
-  - [ ] Menu do usuário (perfil, logout)
-- [ ] Criar `src/components/shared/PageHeader.tsx` → título, descrição, slot de action
-- [ ] Criar `src/components/shared/EmptyState.tsx` → ícone, mensagem, CTA opcional
-- [ ] Criar `src/components/shared/LoadingSpinner.tsx`
-- [ ] Testar layout com página placeholder dentro do `AppShell`
+- [x] Criar `src/components/layout/AppShell.tsx` → wrapper com sidebar + topbar + `<Outlet />`
+- [x] Criar `src/components/layout/Sidebar.tsx`
+  - [x] Logo bewave-admin no topo
+  - [x] Links de navegação: Dashboard, Usuários, Clientes, Quadros, Financeiro
+  - [x] Highlight da rota ativa
+  - [x] Botão de collapse (mobile)
+  - [x] Avatar + nome do usuário logado no rodapé
+- [x] Criar `src/components/layout/TopBar.tsx`
+  - [x] Título da página atual
+  - [x] Toggle dark/light mode
+  - [x] Menu do usuário (perfil, logout)
+- [x] Criar `src/components/shared/PageHeader.tsx` → título, descrição, slot de action
+- [x] Criar `src/components/shared/EmptyState.tsx` → ícone, mensagem, CTA opcional
+- [x] Criar `src/components/shared/LoadingSpinner.tsx`
+- [x] Testar layout com página placeholder dentro do `AppShell`
 
 ---
 
@@ -190,4 +190,4 @@
 
 ---
 
-**Progresso:** `18 / 90` tasks concluídas
+**Progresso:** `32 / 90` tasks concluídas
