@@ -85,19 +85,19 @@
 
 ## FASE 6 — Módulo Usuários
 
-- [ ] Criar `src/services/users.service.ts` → `list`, `create`, `update`, `deactivate`
-- [ ] Criar `src/hooks/useUsers.ts` → `useUsers`, `useCreateUser`, `useUpdateUser`, `useDeactivateUser`
-- [ ] Criar `src/components/shared/DataTable.tsx` → tabela genérica com paginação, loading skeleton, empty state
-- [ ] Criar `src/pages/users/UsersPage.tsx`
-  - [ ] Tabela com colunas: nome, cargo, email, telefone, status, ações
-  - [ ] Botão "Novo Usuário"
-  - [ ] Ação de desativar usuário com `ConfirmDialog`
-- [ ] Criar `src/components/shared/ConfirmDialog.tsx` → dialog de confirmação reutilizável
-- [ ] Criar `src/pages/users/UserFormPage.tsx` (criar e editar)
-  - [ ] Form: nome, cargo, telefone, email, senha (só no criar), role
-  - [ ] Validação Zod com `@bewave/schemas`
-  - [ ] Redirect para `/users` após sucesso
-- [ ] Testar CRUD completo
+- [x] Criar `src/services/users.service.ts` → `list`, `create`, `update`, `deactivate`
+- [x] Criar `src/hooks/useUsers.ts` → `useUsers`, `useCreateUser`, `useUpdateUser`, `useDeactivateUser`
+- [x] Criar `src/components/shared/DataTable.tsx` → tabela genérica com paginação, loading skeleton, empty state
+- [x] Criar `src/pages/users/UsersPage.tsx`
+  - [x] Tabela com colunas: nome, cargo, email, telefone, status, ações
+  - [x] Botão "Novo Usuário"
+  - [x] Ação de desativar usuário com `ConfirmDialog`
+- [x] Criar `src/components/shared/ConfirmDialog.tsx` → dialog de confirmação reutilizável
+- [x] Criar `src/pages/users/UserFormPage.tsx` (criar e editar)
+  - [x] Form: nome, cargo, telefone, email, senha (só no criar), role
+  - [x] Validação Zod com `@bewave/schemas`
+  - [x] Redirect para `/users` após sucesso
+- [x] Testar CRUD completo
 
 ---
 
@@ -190,4 +190,4 @@
 
 ---
 
-**Progresso:** `51 / 90` tasks concluídas
+**Progresso:** `63 / 90` tasks concluídas

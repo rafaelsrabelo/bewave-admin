@@ -3,6 +3,8 @@ import { PrivateRoute } from './PrivateRoute'
 import { AppShell } from '@/components/layout/AppShell'
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { DashboardPage } from '@/pages/dashboard/DashboardPage'
+import { UsersPage } from '@/pages/users/UsersPage'
+import { UserFormPage } from '@/pages/users/UserFormPage'
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -20,9 +22,9 @@ export function AppRoutes() {
       <Route element={<PrivateRoute />}>
         <Route element={<AppShell />}>
           <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/users" element={<PlaceholderPage title="Usuários" />} />
-          <Route path="/users/new" element={<PlaceholderPage title="Novo Usuário" />} />
-          <Route path="/users/:id/edit" element={<PlaceholderPage title="Editar Usuário" />} />
+          <Route path="/users" element={<UsersPage />} />
+          <Route path="/users/new" element={<UserFormPage />} />
+          <Route path="/users/:id/edit" element={<UserFormPage />} />
           <Route path="/clients" element={<PlaceholderPage title="Clientes" />} />
           <Route path="/clients/new" element={<PlaceholderPage title="Novo Cliente" />} />
           <Route path="/clients/:id/edit" element={<PlaceholderPage title="Editar Cliente" />} />
