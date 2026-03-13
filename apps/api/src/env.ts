@@ -1,4 +1,9 @@
+import { config } from 'dotenv'
+import { resolve } from 'path'
 import { z } from 'zod'
+
+config({ path: resolve(process.cwd(), '.env') })
+config({ path: resolve(process.cwd(), '../../.env') })
 
 const envSchema = z.object({
   DATABASE_URL: z.string().url(),

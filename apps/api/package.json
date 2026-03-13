@@ -25,6 +25,7 @@
     "@fastify/swagger-ui": "^2.1.0",
     "@prisma/client": "^5",
     "bcrypt": "^5",
+    "dotenv": "^17.3.1",
     "fastify": "^4",
     "ioredis": "^5.10.0",
     "zod": "^3"
