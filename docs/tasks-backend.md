@@ -132,14 +132,14 @@
 
 ## FASE 9 — Testes
 
-- [ ] Configurar Vitest com `vitest.config.ts`
-- [ ] Testes unitários para `auth.service.ts` (login, refresh, logout)
-- [ ] Testes unitários para `users.service.ts` (create, deactivate)
-- [ ] Testes unitários para `clients.service.ts` (CRUD + filtros)
-- [ ] Testes unitários para `activities.service.ts` (move, assignees)
-- [ ] Testes unitários para `finance.service.ts` (summary)
-- [ ] Testes de integração para rotas de auth (`/login`, `/refresh`)
-- [ ] Verificar cobertura mínima de 70% nos services
+- [x] Configurar Vitest com `vitest.config.ts`
+- [x] Testes unitários para `auth.service.ts` (login, refresh, logout)
+- [x] Testes unitários para `users.service.ts` (create, deactivate)
+- [x] Testes unitários para `clients.service.ts` (CRUD + filtros)
+- [x] Testes unitários para `activities.service.ts` (move, assignees)
+- [x] Testes unitários para `finance.service.ts` (summary)
+- [x] Testes de integração para rotas de auth (`/login`, `/refresh`)
+- [x] Verificar cobertura mínima de 70% nos services
 
 ---
 
