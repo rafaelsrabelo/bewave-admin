@@ -82,36 +82,36 @@
 
 ## FASE 6 — Módulo Workspaces & Boards (Kanban)
 
-- [ ] Criar schemas Zod: `createWorkspace`, `createBoard`, `createColumn`
-- [ ] Criar `src/modules/boards/boards.service.ts`
-  - [ ] `listWorkspaces(userId)` → lista workspaces do usuário autenticado
-  - [ ] `createWorkspace(data)`
-  - [ ] `addMember(workspaceId, userId, role)`
-  - [ ] `removeMember(workspaceId, userId)`
-  - [ ] `getBoardWithColumns(boardId)` → inclui colunas + atividades + assignees
-  - [ ] `createBoard(data)`
-  - [ ] `createColumn(data)`
-  - [ ] `updateColumnPosition(id, position)` → reordenação de colunas
-- [ ] Criar controller e rotas de workspaces/boards
-- [ ] Registrar em `app.ts`
-- [ ] Testar criação de workspace, board e colunas
+- [x] Criar schemas Zod: `createWorkspace`, `createBoard`, `createColumn`
+- [x] Criar `src/modules/boards/boards.service.ts`
+  - [x] `listWorkspaces(userId)` → lista workspaces do usuário autenticado
+  - [x] `createWorkspace(data)`
+  - [x] `addMember(workspaceId, userId, role)`
+  - [x] `removeMember(workspaceId, userId)`
+  - [x] `getBoardWithColumns(boardId)` → inclui colunas + atividades + assignees
+  - [x] `createBoard(data)`
+  - [x] `createColumn(data)`
+  - [x] `updateColumnPosition(id, position)` → reordenação de colunas
+- [x] Criar controller e rotas de workspaces/boards
+- [x] Registrar em `app.ts`
+- [x] Testar criação de workspace, board e colunas
 
 ---
 
 ## FASE 7 — Módulo Atividades (Cards Kanban)
 
-- [ ] Criar schemas Zod: `createActivity`, `updateActivity`, `moveActivity`
-- [ ] Criar `src/modules/activities/activities.service.ts`
-  - [ ] `create(data)` → cria card na coluna com `position` no final
-  - [ ] `update(id, data)` → atualiza título, descrição, prioridade, categoria
-  - [ ] `move(id, { columnId, position })` → reposiciona card (DnD)
-  - [ ] `addAssignee(activityId, userId)`
-  - [ ] `removeAssignee(activityId, userId)`
-  - [ ] `remove(id)` → soft delete
-- [ ] Criar controller e rotas de atividades
-- [ ] `PATCH /api/v1/activities/:id/move` → endpoint de DnD
-- [ ] Registrar em `app.ts`
-- [ ] Testar movimentação de cards e atribuição de responsáveis
+- [x] Criar schemas Zod: `createActivity`, `updateActivity`, `moveActivity`
+- [x] Criar `src/modules/activities/activities.service.ts`
+  - [x] `create(data)` → cria card na coluna com `position` no final
+  - [x] `update(id, data)` → atualiza título, descrição, prioridade, categoria
+  - [x] `move(id, { columnId, position })` → reposiciona card (DnD)
+  - [x] `addAssignee(activityId, userId)`
+  - [x] `removeAssignee(activityId, userId)`
+  - [x] `remove(id)` → soft delete
+- [x] Criar controller e rotas de atividades
+- [x] `PATCH /api/v1/activities/:id/move` → endpoint de DnD
+- [x] Registrar em `app.ts`
+- [x] Testar movimentação de cards e atribuição de responsáveis
 
 ---
 
@@ -155,4 +155,4 @@
 
 ---
 
-**Progresso:** `50 / 70` tasks concluídas
+**Progresso:** `76 / 70` tasks concluídas
