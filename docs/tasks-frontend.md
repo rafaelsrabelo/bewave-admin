@@ -23,14 +23,14 @@
 
 ## FASE 2 — Infraestrutura base
 
-- [ ] Criar `src/lib/axios.ts` → instância Axios com `baseURL`, interceptors de request (token) e response (refresh automático + redirect no 401)
-- [ ] Criar `src/lib/query-client.ts` → TanStack Query com `staleTime` e `retry` configurados
-- [ ] Criar `src/stores/auth.store.ts` → Zustand com `accessToken`, `user`, `setAuth`, `clearAuth`
-- [ ] Criar `src/stores/ui.store.ts` → Zustand com `sidebarOpen`, `theme`
-- [ ] Criar `src/lib/utils.ts` → funções `cn()`, re-exports de `@bewave/utils`
-- [ ] Criar `src/routes/PrivateRoute.tsx` → redireciona para `/login` se não autenticado
-- [ ] Criar `src/routes/index.tsx` → configuração de todas as rotas com React Router
-- [ ] Envolver `main.tsx` com `QueryClientProvider` e `BrowserRouter`
+- [x] Criar `src/lib/axios.ts` → instância Axios com `baseURL`, interceptors de request (token) e response (refresh automático + redirect no 401)
+- [x] Criar `src/lib/query-client.ts` → TanStack Query com `staleTime` e `retry` configurados
+- [x] Criar `src/stores/auth.store.ts` → Zustand com `accessToken`, `user`, `setAuth`, `clearAuth`
+- [x] Criar `src/stores/ui.store.ts` → Zustand com `sidebarOpen`, `theme`
+- [x] Criar `src/lib/utils.ts` → funções `cn()`, re-exports de `@bewave/utils`
+- [x] Criar `src/routes/PrivateRoute.tsx` → redireciona para `/login` se não autenticado
+- [x] Criar `src/routes/index.tsx` → configuração de todas as rotas com React Router
+- [x] Envolver `main.tsx` com `QueryClientProvider` e `BrowserRouter`
 
 ---
 
@@ -190,4 +190,4 @@
 
 ---
 
-**Progresso:** `10 / 90` tasks concluídas
+**Progresso:** `18 / 90` tasks concluídas
