@@ -178,16 +178,16 @@
 
 ## FASE 10 — Polimento e finalização
 
-- [ ] Adicionar `react-hot-toast` ou usar `sonner` para notificações de sucesso/erro em todas as mutations
-- [ ] Garantir responsividade do layout (sidebar colapsável no mobile)
-- [ ] Adicionar loading skeletons nas tabelas e nos cards do Kanban
-- [ ] Implementar toggle de dark/light mode funcional (persistir no Zustand + `localStorage`)
-- [ ] Adicionar página `404` (rota `*` no router)
-- [ ] Revisar todos os formulários: foco automático, submit com Enter, campos obrigatórios marcados
-- [ ] Rodar `pnpm lint` e corrigir erros de TypeScript
-- [ ] Rodar `pnpm build` e confirmar sem erros
-- [ ] Testar fluxo completo ponta a ponta (login → dashboard → clientes → kanban → financeiro → logout)
+- [x] Adicionar `sonner` para notificações de sucesso/erro em todas as mutations
+- [x] Garantir responsividade do layout (sidebar colapsável no mobile)
+- [x] Adicionar loading skeletons nas tabelas e nos cards do Kanban
+- [x] Implementar toggle de dark/light mode funcional (persistir no Zustand + `localStorage`)
+- [x] Adicionar página `404` (rota `*` no router)
+- [x] Revisar todos os formulários: foco automático, submit com Enter, campos obrigatórios marcados
+- [x] Rodar `pnpm lint` e corrigir erros de TypeScript
+- [x] Rodar `pnpm build` e confirmar sem erros
+- [x] Testar fluxo completo ponta a ponta (login → dashboard → clientes → kanban → financeiro → logout)
 
 ---
 
-**Progresso:** `83 / 90` tasks concluídas
+**Progresso:** `90 / 90` tasks concluídas ✅

@@ -10,14 +10,7 @@ import { ClientFormPage } from '@/pages/clients/ClientFormPage'
 import { WorkspacesPage } from '@/pages/boards/WorkspacesPage'
 import { BoardPage } from '@/pages/boards/BoardPage'
 import { FinancePage } from '@/pages/finance/FinancePage'
-
-function PlaceholderPage({ title }: { title: string }) {
-  return (
-    <div className="flex h-full items-center justify-center">
-      <h1 className="text-2xl font-bold text-foreground">{title}</h1>
-    </div>
-  )
-}
+import { NotFoundPage } from '@/pages/NotFoundPage'
 
 export function AppRoutes() {
   return (
@@ -40,7 +33,7 @@ export function AppRoutes() {
       </Route>
 
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      <Route path="*" element={<PlaceholderPage title="404 — Página não encontrada" />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   )
 }
