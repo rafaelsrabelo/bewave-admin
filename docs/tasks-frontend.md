@@ -159,20 +159,20 @@
 
 ## FASE 9 — Módulo Financeiro
 
-- [ ] Criar `src/services/finance.service.ts` → `list`, `create`, `remove`, `getSummary`
-- [ ] Criar `src/hooks/useFinance.ts` → `useFinanceEntries`, `useFinanceSummary`, `useCreateEntry`, `useRemoveEntry`
-- [ ] Criar `src/pages/finance/FinancePage.tsx`
-  - [ ] Cards de resumo: Total Entradas, Total Saídas, Saldo (com cor verde/vermelho)
-  - [ ] Filtro por período (mês atual como padrão)
-  - [ ] Tabela de lançamentos: data, tipo, descrição, categoria, valor
-  - [ ] Badge de tipo (`income` = verde, `expense` = vermelho)
-  - [ ] Valores formatados com `formatCurrency()` de `@bewave/utils`
-  - [ ] Botão "Novo Lançamento"
-  - [ ] Ação de deletar com `ConfirmDialog`
-- [ ] Criar `src/components/finance/FinanceEntryModal.tsx`
-  - [ ] Form: tipo (toggle income/expense), valor, descrição, categoria, data
-  - [ ] Validação Zod
-- [ ] Testar lançamentos e resumo por período
+- [x] Criar `src/services/finance.service.ts` → `list`, `create`, `remove`, `getSummary`
+- [x] Criar `src/hooks/useFinance.ts` → `useFinanceEntries`, `useFinanceSummary`, `useCreateEntry`, `useRemoveEntry`
+- [x] Criar `src/pages/finance/FinancePage.tsx`
+  - [x] Cards de resumo: Total Entradas, Total Saídas, Saldo (com cor verde/vermelho)
+  - [x] Filtro por período (mês atual como padrão)
+  - [x] Tabela de lançamentos: data, tipo, descrição, categoria, valor
+  - [x] Badge de tipo (`income` = verde, `expense` = vermelho)
+  - [x] Valores formatados com `formatCurrency()` de `@bewave/utils`
+  - [x] Botão "Novo Lançamento"
+  - [x] Ação de deletar com `ConfirmDialog`
+- [x] Criar `src/components/finance/FinanceEntryModal.tsx`
+  - [x] Form: tipo (toggle income/expense), valor, descrição, categoria, data
+  - [x] Validação Zod
+- [x] Testar lançamentos e resumo por período
 
 ---
 
@@ -190,4 +190,4 @@
 
 ---
 
-**Progresso:** `80 / 90` tasks concluídas
+**Progresso:** `83 / 90` tasks concluídas

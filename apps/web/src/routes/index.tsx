@@ -9,6 +9,7 @@ import { ClientsPage } from '@/pages/clients/ClientsPage'
 import { ClientFormPage } from '@/pages/clients/ClientFormPage'
 import { WorkspacesPage } from '@/pages/boards/WorkspacesPage'
 import { BoardPage } from '@/pages/boards/BoardPage'
+import { FinancePage } from '@/pages/finance/FinancePage'
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -34,7 +35,7 @@ export function AppRoutes() {
           <Route path="/clients/:id/edit" element={<ClientFormPage />} />
           <Route path="/boards" element={<WorkspacesPage />} />
           <Route path="/boards/:id" element={<BoardPage />} />
-          <Route path="/finance" element={<PlaceholderPage title="Financeiro" />} />
+          <Route path="/finance" element={<FinancePage />} />
         </Route>
       </Route>
 
