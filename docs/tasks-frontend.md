@@ -71,15 +71,15 @@
 
 ## FASE 5 — Dashboard
 
-- [ ] Criar `src/services/dashboard.service.ts` → chamadas de resumo (ou compor de outros services)
-- [ ] Criar `src/pages/dashboard/DashboardPage.tsx`
-  - [ ] Card: total de clientes ativos
-  - [ ] Card: total de leads
-  - [ ] Card: mensalidades pagas vs pendentes
-  - [ ] Card: saldo financeiro do mês atual
-  - [ ] Lista das últimas atividades criadas (últimas 5)
-- [ ] Criar `src/components/shared/StatCard.tsx` → card de métrica reutilizável
-- [ ] Testar integração com API
+- [x] Criar `src/services/dashboard.service.ts` → chamadas de resumo (ou compor de outros services)
+- [x] Criar `src/pages/dashboard/DashboardPage.tsx`
+  - [x] Card: total de clientes ativos
+  - [x] Card: total de leads
+  - [x] Card: mensalidades pagas vs pendentes
+  - [x] Card: saldo financeiro do mês atual
+  - [x] Lista das últimas atividades criadas (últimas 5)
+- [x] Criar `src/components/shared/StatCard.tsx` → card de métrica reutilizável
+- [x] Testar integração com API
 
 ---
 
@@ -190,4 +190,4 @@
 
 ---
 
-**Progresso:** `42 / 90` tasks concluídas
+**Progresso:** `51 / 90` tasks concluídas

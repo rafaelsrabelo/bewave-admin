@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { PrivateRoute } from './PrivateRoute'
 import { AppShell } from '@/components/layout/AppShell'
 import { LoginPage } from '@/pages/auth/LoginPage'
+import { DashboardPage } from '@/pages/dashboard/DashboardPage'
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -18,7 +19,7 @@ export function AppRoutes() {
 
       <Route element={<PrivateRoute />}>
         <Route element={<AppShell />}>
-          <Route path="/dashboard" element={<PlaceholderPage title="Dashboard" />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/users" element={<PlaceholderPage title="Usuários" />} />
           <Route path="/users/new" element={<PlaceholderPage title="Novo Usuário" />} />
           <Route path="/users/:id/edit" element={<PlaceholderPage title="Editar Usuário" />} />
