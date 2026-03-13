@@ -5,6 +5,7 @@ import cookie from '@fastify/cookie'
 import { registerErrorHandler } from './shared/middleware/error-handler.js'
 import { authRoutes } from './modules/auth/auth.routes.js'
 import { usersRoutes } from './modules/users/users.routes.js'
+import { clientsRoutes } from './modules/clients/clients.routes.js'
 import { env } from './env.js'
 
 export async function buildApp() {
@@ -34,6 +35,7 @@ export async function buildApp() {
 
   await app.register(authRoutes, { prefix: '/api/v1/auth' })
   await app.register(usersRoutes, { prefix: '/api/v1/users' })
+  await app.register(clientsRoutes, { prefix: '/api/v1/clients' })
 
   return app
 }

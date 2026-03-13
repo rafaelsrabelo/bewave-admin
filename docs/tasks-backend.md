@@ -66,17 +66,17 @@
 
 ## FASE 5 — Módulo Clientes
 
-- [ ] Criar `src/modules/clients/clients.schema.ts` (Zod: `createClient`, `updateClient`, `listClients`)
-- [ ] Criar `src/modules/clients/clients.service.ts`
-  - [ ] `list(filters)` → paginado, filtro por `status` e `paid`
-  - [ ] `findById(id)` → lança `AppError` se não encontrado / deletado
-  - [ ] `create(data)`
-  - [ ] `update(id, data)`
-  - [ ] `remove(id)` → soft delete (`deletedAt`)
-- [ ] Criar `src/modules/clients/clients.controller.ts`
-- [ ] Criar `src/modules/clients/clients.routes.ts`
-- [ ] Registrar rotas em `app.ts` com prefixo `/api/v1/clients`
-- [ ] Testar CRUD completo + filtros
+- [x] Criar `src/modules/clients/clients.schema.ts` (Zod: `createClient`, `updateClient`, `listClients`)
+- [x] Criar `src/modules/clients/clients.service.ts`
+  - [x] `list(filters)` → paginado, filtro por `status` e `paid`
+  - [x] `findById(id)` → lança `AppError` se não encontrado / deletado
+  - [x] `create(data)`
+  - [x] `update(id, data)`
+  - [x] `remove(id)` → soft delete (`deletedAt`)
+- [x] Criar `src/modules/clients/clients.controller.ts`
+- [x] Criar `src/modules/clients/clients.routes.ts`
+- [x] Registrar rotas em `app.ts` com prefixo `/api/v1/clients`
+- [x] Testar CRUD completo + filtros
 
 ---
 
@@ -155,4 +155,4 @@
 
 ---
 
-**Progresso:** `39 / 70` tasks concluídas
+**Progresso:** `50 / 70` tasks concluídas
