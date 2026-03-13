@@ -103,21 +103,21 @@
 
 ## FASE 7 — Módulo Clientes
 
-- [ ] Criar `src/services/clients.service.ts` → `list`, `create`, `update`, `remove`
-- [ ] Criar `src/hooks/useClients.ts` → `useClients`, `useCreateClient`, `useUpdateClient`, `useRemoveClient`
-- [ ] Criar `src/pages/clients/ClientsPage.tsx`
-  - [ ] Tabela com colunas: nome, email, telefone, status, contrato, mensalidade, ações
-  - [ ] Filtros: por status (`lead` / `active`) e por pagamento (`pago` / `pendente`)
-  - [ ] Badge de status colorido (`lead` = amarelo, `active` = verde)
-  - [ ] Badge de pagamento (`pago` = verde, `pendente` = vermelho)
-  - [ ] Botão "Novo Cliente"
-  - [ ] Ação de deletar com `ConfirmDialog`
-- [ ] Criar `src/components/shared/StatusBadge.tsx` → badge reutilizável com variantes
-- [ ] Criar `src/pages/clients/ClientFormPage.tsx` (criar e editar)
-  - [ ] Form: nome, endereço, telefone, email, tempo de contrato, pago (checkbox), status
-  - [ ] Validação Zod
-  - [ ] Redirect para `/clients` após sucesso
-- [ ] Testar CRUD + filtros
+- [x] Criar `src/services/clients.service.ts` → `list`, `create`, `update`, `remove`
+- [x] Criar `src/hooks/useClients.ts` → `useClients`, `useCreateClient`, `useUpdateClient`, `useRemoveClient`
+- [x] Criar `src/pages/clients/ClientsPage.tsx`
+  - [x] Tabela com colunas: nome, email, telefone, status, contrato, mensalidade, ações
+  - [x] Filtros: por status (`lead` / `active`) e por pagamento (`pago` / `pendente`)
+  - [x] Badge de status colorido (`lead` = amarelo, `active` = verde)
+  - [x] Badge de pagamento (`pago` = verde, `pendente` = vermelho)
+  - [x] Botão "Novo Cliente"
+  - [x] Ação de deletar com `ConfirmDialog`
+- [x] Criar `src/components/shared/StatusBadge.tsx` → badge reutilizável com variantes
+- [x] Criar `src/pages/clients/ClientFormPage.tsx` (criar e editar)
+  - [x] Form: nome, endereço, telefone, email, tempo de contrato, pago (checkbox), status
+  - [x] Validação Zod
+  - [x] Redirect para `/clients` após sucesso
+- [x] Testar CRUD + filtros
 
 ---
 
@@ -190,4 +190,4 @@
 
 ---
 
-**Progresso:** `63 / 90` tasks concluídas
+**Progresso:** `77 / 90` tasks concluídas
