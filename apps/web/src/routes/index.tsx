@@ -7,6 +7,8 @@ import { UsersPage } from '@/pages/users/UsersPage'
 import { UserFormPage } from '@/pages/users/UserFormPage'
 import { ClientsPage } from '@/pages/clients/ClientsPage'
 import { ClientFormPage } from '@/pages/clients/ClientFormPage'
+import { WorkspacesPage } from '@/pages/boards/WorkspacesPage'
+import { BoardPage } from '@/pages/boards/BoardPage'
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -30,8 +32,8 @@ export function AppRoutes() {
           <Route path="/clients" element={<ClientsPage />} />
           <Route path="/clients/new" element={<ClientFormPage />} />
           <Route path="/clients/:id/edit" element={<ClientFormPage />} />
-          <Route path="/boards" element={<PlaceholderPage title="Quadros" />} />
-          <Route path="/boards/:id" element={<PlaceholderPage title="Board" />} />
+          <Route path="/boards" element={<WorkspacesPage />} />
+          <Route path="/boards/:id" element={<BoardPage />} />
           <Route path="/finance" element={<PlaceholderPage title="Financeiro" />} />
         </Route>
       </Route>

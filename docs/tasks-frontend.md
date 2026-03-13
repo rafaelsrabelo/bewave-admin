@@ -123,37 +123,37 @@
 
 ## FASE 8 — Módulo Kanban (Quadros)
 
-- [ ] Criar `src/services/boards.service.ts` → workspaces, boards, columns, activities
-- [ ] Criar `src/hooks/useBoards.ts` → queries e mutations para boards, colunas e atividades
-- [ ] Criar `src/pages/boards/WorkspacesPage.tsx`
-  - [ ] Grid de cards de workspaces
-  - [ ] Botão "Novo Workspace"
-  - [ ] Exibir membros (avatares) em cada workspace
-  - [ ] Navegar para o board ao clicar
-- [ ] Criar `src/pages/boards/BoardPage.tsx`
-  - [ ] Listagem das colunas em scroll horizontal
-  - [ ] Botão "Adicionar Coluna"
-  - [ ] Integração com DnD (estrutura base)
-- [ ] Criar `src/components/kanban/Board.tsx` → `DndContext` + `SortableContext` horizontal (colunas)
-- [ ] Criar `src/components/kanban/Column.tsx`
-  - [ ] Header com título e count de cards
-  - [ ] Lista de cards com `SortableContext` vertical
-  - [ ] Botão "Adicionar atividade"
-  - [ ] Drop zone visível ao arrastar
-- [ ] Criar `src/components/kanban/ActivityCard.tsx`
-  - [ ] Título, badge de prioridade, badge de categoria
-  - [ ] Avatares dos responsáveis (até 3 + overflow)
-  - [ ] `useSortable` do dnd-kit
-  - [ ] Efeito visual ao arrastar (overlay)
-- [ ] Criar `src/components/kanban/ActivityModal.tsx` (criar e editar card)
-  - [ ] Form: título, descrição (textarea), prioridade (select), categoria (input), responsáveis (multi-select de usuários)
-- [ ] Implementar lógica de DnD
-  - [ ] Mover card entre colunas
-  - [ ] Reordenar cards dentro da mesma coluna
-  - [ ] Optimistic update com TanStack Query
-  - [ ] Rollback em caso de erro na API
-- [ ] Criar `src/hooks/useKanban.ts` → encapsula toda lógica de DnD e mutations
-- [ ] Testar drag & drop completo
+- [x] Criar `src/services/boards.service.ts` → workspaces, boards, columns, activities
+- [x] Criar `src/hooks/useBoards.ts` → queries e mutations para boards, colunas e atividades
+- [x] Criar `src/pages/boards/WorkspacesPage.tsx`
+  - [x] Grid de cards de workspaces
+  - [x] Botão "Novo Workspace"
+  - [x] Exibir membros (avatares) em cada workspace
+  - [x] Navegar para o board ao clicar
+- [x] Criar `src/pages/boards/BoardPage.tsx`
+  - [x] Listagem das colunas em scroll horizontal
+  - [x] Botão "Adicionar Coluna"
+  - [x] Integração com DnD (estrutura base)
+- [x] Criar `src/components/kanban/Board.tsx` → `DndContext` + `SortableContext` horizontal (colunas)
+- [x] Criar `src/components/kanban/Column.tsx`
+  - [x] Header com título e count de cards
+  - [x] Lista de cards com `SortableContext` vertical
+  - [x] Botão "Adicionar atividade"
+  - [x] Drop zone visível ao arrastar
+- [x] Criar `src/components/kanban/ActivityCard.tsx`
+  - [x] Título, badge de prioridade, badge de categoria
+  - [x] Avatares dos responsáveis (até 3 + overflow)
+  - [x] `useSortable` do dnd-kit
+  - [x] Efeito visual ao arrastar (overlay)
+- [x] Criar `src/components/kanban/ActivityModal.tsx` (criar e editar card)
+  - [x] Form: título, descrição (textarea), prioridade (select), categoria (input), responsáveis (multi-select de usuários)
+- [x] Implementar lógica de DnD
+  - [x] Mover card entre colunas
+  - [x] Reordenar cards dentro da mesma coluna
+  - [x] Optimistic update com TanStack Query
+  - [x] Rollback em caso de erro na API
+- [x] Criar `src/hooks/useKanban.ts` → encapsula toda lógica de DnD e mutations
+- [x] Testar drag & drop completo
 
 ---
 
@@ -190,4 +190,4 @@
 
 ---
 
-**Progresso:** `77 / 90` tasks concluídas
+**Progresso:** `80 / 90` tasks concluídas
