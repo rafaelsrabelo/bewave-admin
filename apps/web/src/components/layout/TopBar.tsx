@@ -1,7 +1,8 @@
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { LogOut, Moon, Sun, User } from 'lucide-react'
 import { useAuthStore } from '@/stores/auth.store'
 import { useUiStore } from '@/stores/ui.store'
+import { useLogout } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -22,20 +23,14 @@ const pageTitles: Record<string, string> = {
 
 export function TopBar() {
   const location = useLocation()
-  const navigate = useNavigate()
   const user = useAuthStore((s) => s.user)
-  const clearAuth = useAuthStore((s) => s.clearAuth)
   const { theme, toggleTheme } = useUiStore()
+  const logoutMutation = useLogout()
 
   const currentTitle =
     Object.entries(pageTitles).find(([path]) =>
       location.pathname.startsWith(path),
     )?.[1] ?? ''
-
-  function handleLogout() {
-    clearAuth()
-    navigate('/login')
-  }
 
   return (
     <header className="flex h-14 items-center justify-between border-b border-border bg-background px-6">
@@ -71,7 +66,7 @@ export function TopBar() {
               Perfil
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout} className="text-destructive">
+            <DropdownMenuItem onClick={() => logoutMutation.mutate()} className="text-destructive">
               <LogOut className="mr-2 h-4 w-4" />
               Sair
             </DropdownMenuItem>

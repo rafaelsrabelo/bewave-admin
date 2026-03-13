@@ -56,16 +56,16 @@
 
 ## FASE 4 — Autenticação
 
-- [ ] Criar `src/services/auth.service.ts` → `login()`, `logout()`, `refreshToken()`
-- [ ] Criar `src/hooks/useAuth.ts` → `useLogin`, `useLogout`
-- [ ] Criar `src/pages/auth/LoginPage.tsx`
-  - [ ] Form com `react-hook-form` + validação Zod (`loginSchema` de `@bewave/schemas`)
-  - [ ] Campo email + senha com toggle de visibilidade
-  - [ ] Estado de loading no botão
-  - [ ] Exibição de erro de credenciais inválidas
-  - [ ] Redirect para `/dashboard` após login bem-sucedido
-- [ ] Configurar interceptor de refresh automático no `axios.ts`
-- [ ] Testar fluxo completo: login → token no Zustand → rota protegida → logout
+- [x] Criar `src/services/auth.service.ts` → `login()`, `logout()`, `refreshToken()`
+- [x] Criar `src/hooks/useAuth.ts` → `useLogin`, `useLogout`
+- [x] Criar `src/pages/auth/LoginPage.tsx`
+  - [x] Form com `react-hook-form` + validação Zod (`loginSchema` de `@bewave/schemas`)
+  - [x] Campo email + senha com toggle de visibilidade
+  - [x] Estado de loading no botão
+  - [x] Exibição de erro de credenciais inválidas
+  - [x] Redirect para `/dashboard` após login bem-sucedido
+- [x] Configurar interceptor de refresh automático no `axios.ts`
+- [x] Testar fluxo completo: login → token no Zustand → rota protegida → logout
 
 ---
 
@@ -190,4 +190,4 @@
 
 ---
 
-**Progresso:** `32 / 90` tasks concluídas
+**Progresso:** `42 / 90` tasks concluídas

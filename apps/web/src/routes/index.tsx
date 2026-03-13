@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { PrivateRoute } from './PrivateRoute'
 import { AppShell } from '@/components/layout/AppShell'
+import { LoginPage } from '@/pages/auth/LoginPage'
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -10,18 +11,10 @@ function PlaceholderPage({ title }: { title: string }) {
   )
 }
 
-function LoginPlaceholder() {
-  return (
-    <div className="flex h-screen items-center justify-center">
-      <h1 className="text-2xl font-bold text-foreground">Login</h1>
-    </div>
-  )
-}
-
 export function AppRoutes() {
   return (
     <Routes>
-      <Route path="/login" element={<LoginPlaceholder />} />
+      <Route path="/login" element={<LoginPage />} />
 
       <Route element={<PrivateRoute />}>
         <Route element={<AppShell />}>
