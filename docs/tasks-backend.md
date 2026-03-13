@@ -145,14 +145,14 @@
 
 ## FASE 10 — Finalização
 
-- [ ] Adicionar `@fastify/swagger` e documentar rotas principais
-- [ ] Revisar todos os `console.log` (substituir por `fastify.log`)
-- [ ] Adicionar seed `prisma/seed.ts` com usuário admin padrão
-- [ ] Rodar `pnpm lint` e corrigir erros
-- [ ] Rodar `pnpm build` e confirmar sem erros de TypeScript
-- [ ] Atualizar `.env.example` com todas as variáveis usadas
-- [ ] Revisar `CLAUDE.md` se algum padrão mudou durante o desenvolvimento
+- [x] Adicionar `@fastify/swagger` e documentar rotas principais
+- [x] Revisar todos os `console.log` (substituir por `fastify.log`)
+- [x] Adicionar seed `prisma/seed.ts` com usuário admin padrão
+- [x] Rodar `pnpm lint` e corrigir erros
+- [x] Rodar `pnpm build` e confirmar sem erros de TypeScript
+- [x] Atualizar `.env.example` com todas as variáveis usadas
+- [x] Revisar `CLAUDE.md` se algum padrão mudou durante o desenvolvimento
 
 ---
 
-**Progresso:** `76 / 70` tasks concluídas
+**Progresso:** `83 / 83` tasks concluídas ✅

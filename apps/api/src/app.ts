@@ -2,6 +2,8 @@ import Fastify from 'fastify'
 import cors from '@fastify/cors'
 import jwt from '@fastify/jwt'
 import cookie from '@fastify/cookie'
+import swagger from '@fastify/swagger'
+import swaggerUi from '@fastify/swagger-ui'
 import { registerErrorHandler } from './shared/middleware/error-handler.js'
 import { authRoutes } from './modules/auth/auth.routes.js'
 import { usersRoutes } from './modules/users/users.routes.js'
@@ -29,6 +31,36 @@ export async function buildApp() {
   })
 
   await app.register(cookie)
+
+  await app.register(swagger, {
+    swagger: {
+      info: {
+        title: 'Bewave Admin API',
+        description: 'API para gerenciamento de usuários, clientes, quadros Kanban e financeiro',
+        version: '1.0.0',
+      },
+      host: `localhost:${env.API_PORT}`,
+      schemes: ['http'],
+      consumes: ['application/json'],
+      produces: ['application/json'],
+      securityDefinitions: {
+        Bearer: {
+          type: 'apiKey',
+          name: 'Authorization',
+          in: 'header',
+          description: 'JWT access token (Bearer <token>)',
+        },
+      },
+    },
+  })
+
+  await app.register(swaggerUi, {
+    routePrefix: '/docs',
+    uiConfig: {
+      docExpansion: 'list',
+      deepLinking: true,
+    },
+  })
 
   registerErrorHandler(app)
 
