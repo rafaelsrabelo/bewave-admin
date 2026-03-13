@@ -20,9 +20,6 @@ dist/
 .DS_Store
 Thumbs.db
 
-# Prisma
-apps/api/prisma/migrations/
-
 # Test
 coverage/
 

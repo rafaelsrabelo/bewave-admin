@@ -12,7 +12,7 @@
 - [x] Instalar dependências: Fastify, TypeScript, tsx, zod, bcrypt
 - [x] Instalar Prisma (`prisma`, `@prisma/client`)
 - [x] Configurar `prisma/schema.prisma` com todos os modelos
-- [ ] Rodar `prisma migrate dev --name init` e confirmar tabelas criadas
+- [x] Rodar `prisma migrate dev --name init` e confirmar tabelas criadas
 - [x] Criar singleton `src/lib/prisma.ts`
 - [x] Criar `src/app.ts` com instância base do Fastify
 - [x] Adicionar rota `/health` e testar `pnpm dev`
@@ -155,4 +155,4 @@
 
 ---
 
-**Progresso:** `9 / 70` tasks concluídas
+**Progresso:** `10 / 70` tasks concluídas
