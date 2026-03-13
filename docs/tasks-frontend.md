@@ -8,16 +8,16 @@
 
 ## FASE 1 — Setup inicial
 
-- [ ] Inicializar projeto com Vite + React + TypeScript em `apps/web`
-- [ ] Configurar `tsconfig.json` com `strict: true` e paths (`@/*`)
-- [ ] Instalar e configurar TailwindCSS v3
-- [ ] Inicializar shadcn/ui (`npx shadcn-ui@latest init`)
-- [ ] Instalar componentes shadcn base: `button`, `input`, `label`, `card`, `badge`, `dialog`, `dropdown-menu`, `select`, `textarea`, `table`, `toast`, `separator`, `avatar`, `tooltip`
-- [ ] Instalar dependências: `axios`, `react-router-dom`, `@tanstack/react-query`, `zustand`, `react-hook-form`, `zod`, `@hookform/resolvers`, `date-fns`, `lucide-react`
-- [ ] Instalar `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`
-- [ ] Configurar fontes Geist via `@fontsource/geist` ou CDN no `index.html`
-- [ ] Definir CSS variables do design system em `index.css` (paleta dark/light)
-- [ ] Testar `pnpm dev` com página em branco funcionando
+- [x] Inicializar projeto com Vite + React + TypeScript em `apps/web`
+- [x] Configurar `tsconfig.json` com `strict: true` e paths (`@/*`)
+- [x] Instalar e configurar TailwindCSS v4
+- [x] Inicializar shadcn/ui (`npx shadcn@latest init`)
+- [x] Instalar componentes shadcn base: `button`, `input`, `label`, `card`, `badge`, `dialog`, `dropdown-menu`, `select`, `textarea`, `table`, `sonner`, `separator`, `avatar`, `tooltip`
+- [x] Instalar dependências: `axios`, `react-router-dom`, `@tanstack/react-query`, `zustand`, `react-hook-form`, `zod`, `@hookform/resolvers`, `date-fns`, `lucide-react`
+- [x] Instalar `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`
+- [x] Configurar fontes Geist via CDN no `index.html`
+- [x] Definir CSS variables do design system em `index.css` (paleta dark/light)
+- [x] Testar `pnpm dev` com página em branco funcionando
 
 ---
 
@@ -190,4 +190,4 @@
 
 ---
 
-**Progresso:** `0 / 90` tasks concluídas
+**Progresso:** `10 / 90` tasks concluídas
