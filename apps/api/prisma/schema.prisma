@@ -1,0 +1,151 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  admin
+  member
+}
+
+enum ClientStatus {
+  lead
+  active
+}
+
+enum ActivityPriority {
+  low
+  medium
+  high
+  urgent
+}
+
+enum FinanceType {
+  income
+  expense
+}
+
+model User {
+  id           String    @id @default(cuid())
+  name         String
+  role         UserRole  @default(member)
+  phone        String?
+  email        String    @unique
+  passwordHash String
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  workspaces WorkspaceMember[]
+  activities ActivityAssignee[]
+
+  @@map("users")
+}
+
+model Client {
+  id             String       @id @default(cuid())
+  name           String
+  address        String?
+  phone          String?
+  email          String?
+  contractMonths Int          @default(12)
+  paid           Boolean      @default(false)
+  status         ClientStatus @default(lead)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  @@map("clients")
+}
+
+model Workspace {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+
+  members WorkspaceMember[]
+  boards  Board[]
+
+  @@map("workspaces")
+}
+
+model WorkspaceMember {
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspaceId String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  role        String    @default("member")
+
+  @@id([workspaceId, userId])
+  @@map("workspace_members")
+}
+
+model Board {
+  id          String    @id @default(cuid())
+  name        String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspaceId String
+  createdAt   DateTime  @default(now())
+
+  columns Column[]
+
+  @@map("boards")
+}
+
+model Column {
+  id        String   @id @default(cuid())
+  title     String
+  position  Int      @default(0)
+  board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  boardId   String
+  createdAt DateTime @default(now())
+
+  activities Activity[]
+
+  @@map("columns")
+}
+
+model Activity {
+  id          String           @id @default(cuid())
+  title       String
+  description String?
+  priority    ActivityPriority @default(medium)
+  category    String?
+  position    Int              @default(0)
+  column      Column           @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  columnId    String
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  deletedAt   DateTime?
+
+  assignees ActivityAssignee[]
+
+  @@map("activities")
+}
+
+model ActivityAssignee {
+  activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  activityId String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+
+  @@id([activityId, userId])
+  @@map("activity_assignees")
+}
+
+model FinanceEntry {
+  id          String      @id @default(cuid())
+  type        FinanceType
+  amount      Int
+  description String
+  category    String?
+  date        DateTime    @db.Date
+  createdAt   DateTime    @default(now())
+
+  @@map("finance_entries")
+}
