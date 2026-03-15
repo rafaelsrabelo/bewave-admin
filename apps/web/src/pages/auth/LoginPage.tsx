@@ -56,6 +56,7 @@ function formatCurrency(value: number) {
 
 export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
+  const [credentialError, setCredentialError] = useState<string | null>(null)
   const loginMutation = useLogin()
   const stats = useLoginStats()
 
@@ -68,7 +69,16 @@ export function LoginPage() {
   })
 
   function onSubmit(data: LoginForm) {
-    loginMutation.mutate(data)
+    setCredentialError(null)
+    loginMutation.mutate(data, {
+      onError: () => {
+        setCredentialError('Credenciais inválidas. Verifique seu e-mail e senha.')
+      },
+    })
+  }
+
+  function clearCredentialError() {
+    if (credentialError) setCredentialError(null)
   }
 
   return (
@@ -111,7 +121,7 @@ export function LoginPage() {
                   placeholder="seu@email.com"
                   autoFocus
                   className="h-11 border-zinc-300 bg-white pl-10 text-zinc-900 placeholder:text-zinc-400 focus-visible:ring-[#03428E] dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
-                  {...register('email')}
+                  {...register('email', { onChange: clearCredentialError })}
                 />
               </div>
               {errors.email && (
@@ -130,7 +140,7 @@ export function LoginPage() {
                   type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••"
                   className="h-11 border-zinc-300 bg-white pl-10 pr-10 text-zinc-900 placeholder:text-zinc-400 focus-visible:ring-[#03428E] dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
-                  {...register('password')}
+                  {...register('password', { onChange: clearCredentialError })}
                 />
                 <button
                   type="button"
@@ -151,9 +161,9 @@ export function LoginPage() {
               </button>
             </div>
 
-            {loginMutation.isError && (
+            {credentialError && (
               <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:border-red-800 dark:bg-red-950/50 dark:text-red-400">
-                Credenciais inválidas. Verifique seu e-mail e senha.
+                {credentialError}
               </div>
             )}
 

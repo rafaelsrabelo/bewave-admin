@@ -2,7 +2,6 @@ import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { authService } from '@/services/auth.service'
 import { useAuthStore } from '@/stores/auth.store'
-import { toast } from 'sonner'
 
 export function useLogin() {
   const setAuth = useAuthStore((s) => s.setAuth)
@@ -14,9 +13,6 @@ export function useLogin() {
     onSuccess: (data) => {
       setAuth(data.accessToken, data.user)
       navigate('/dashboard')
-    },
-    onError: () => {
-      toast.error('Credenciais inválidas')
     },
   })
 }

@@ -1,6 +1,8 @@
 import axios from 'axios'
 import { useAuthStore } from '@/stores/auth.store'
 
+const AUTH_ROUTES = ['/auth/login', '/auth/refresh', '/auth/logout']
+
 export const api = axios.create({
   baseURL: '/api/v1',
   withCredentials: true,
@@ -34,12 +36,21 @@ function processQueue(error: unknown, token: string | null) {
   failedQueue = []
 }
 
+function isAuthRoute(url: string | undefined): boolean {
+  if (!url) return false
+  return AUTH_ROUTES.some((route) => url.includes(route))
+}
+
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !isAuthRoute(originalRequest.url)
+    ) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject })
