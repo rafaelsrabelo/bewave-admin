@@ -6,7 +6,7 @@ import { Eye, EyeOff, Loader2, ArrowRight, Mail, Lock, Shield, Clock, Zap } from
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useLogin } from '@/hooks/useAuth'
-import { api } from '@/lib/axios'
+import axios from 'axios'
 
 const loginSchema = z.object({
   email: z.string().email('Email inválido'),
@@ -24,11 +24,13 @@ function useLoginStats() {
   const [stats, setStats] = useState<LoginStats | null>(null)
 
   useEffect(() => {
+    const publicApi = axios.create({ baseURL: '/api/v1' })
+
     async function fetchStats() {
       try {
         const [clientsRes, financeRes] = await Promise.all([
-          api.get('/clients', { params: { limit: 999 } }).catch(() => null),
-          api.get('/finance/summary', {
+          publicApi.get('/clients', { params: { limit: 999 } }).catch(() => null),
+          publicApi.get('/finance/summary', {
             params: {
               dateFrom: `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-01`,
               dateTo: `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate()).padStart(2, '0')}`,
