@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
-import { Plus } from 'lucide-react'
+import { useParams, useNavigate } from 'react-router-dom'
+import { Plus, Users, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -12,20 +12,26 @@ import {
 } from '@/components/ui/dialog'
 import { PageHeader } from '@/components/shared/PageHeader'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
 import { Board } from '@/components/kanban/Board'
 import { ActivityPanel } from '@/components/kanban/ActivityPanel'
-import { useBoard } from '@/hooks/useBoards'
+import { BoardMembersModal } from '@/components/boards/BoardMembersModal'
+import { useBoard, useRemoveBoard } from '@/hooks/useBoards'
 import { useCreateColumn } from '@/hooks/useColumns'
 import { useKanbanStore } from '@/stores/kanban.store'
 import { cn } from '@/lib/utils'
 
 export function BoardPage() {
   const { id } = useParams()
+  const navigate = useNavigate()
   const [dialogOpen, setDialogOpen] = useState(false)
   const [columnTitle, setColumnTitle] = useState('')
+  const [membersOpen, setMembersOpen] = useState(false)
+  const [deleteOpen, setDeleteOpen] = useState(false)
 
   const { data: board, isLoading } = useBoard(id ?? '')
   const createColumn = useCreateColumn(id ?? '')
+  const removeBoard = useRemoveBoard()
   const { isPanelOpen, setSelectedActivity } = useKanbanStore()
 
   useEffect(() => {
@@ -38,7 +44,6 @@ export function BoardPage() {
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [isPanelOpen, setSelectedActivity])
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => setSelectedActivity(null)
   }, [setSelectedActivity])
@@ -57,12 +62,19 @@ export function BoardPage() {
     }
   }
 
+  function handleDeleteBoard() {
+    if (!id) return
+    removeBoard.mutate(id, {
+      onSuccess: () => navigate('/boards'),
+    })
+  }
+
   if (isLoading) {
     return <LoadingSpinner className="h-64" size="lg" />
   }
 
   if (!board) {
-    return <p className="text-muted-foreground">Board não encontrado</p>
+    return <p className="text-muted-foreground">Quadro não encontrado</p>
   }
 
   return (
@@ -79,10 +91,20 @@ export function BoardPage() {
         }
         description={`${board.columns.length} coluna(s) · ${board.members?.length ?? 0} membro(s)`}
         action={
-          <Button onClick={() => setDialogOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" />
-            Adicionar Coluna
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={() => setMembersOpen(true)}>
+              <Users className="mr-2 h-4 w-4" />
+              Membros
+            </Button>
+            <Button variant="outline" size="sm" className="text-destructive" onClick={() => setDeleteOpen(true)}>
+              <Trash2 className="mr-2 h-4 w-4" />
+              Deletar
+            </Button>
+            <Button size="sm" onClick={() => setDialogOpen(true)}>
+              <Plus className="mr-2 h-4 w-4" />
+              Coluna
+            </Button>
+          </div>
         }
       />
 
@@ -94,6 +116,7 @@ export function BoardPage() {
         {isPanelOpen && <ActivityPanel boardId={board.id} />}
       </div>
 
+      {/* Create Column Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -116,6 +139,26 @@ export function BoardPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Board Members Modal */}
+      {id && (
+        <BoardMembersModal
+          open={membersOpen}
+          onOpenChange={setMembersOpen}
+          boardId={id}
+        />
+      )}
+
+      {/* Delete Board Confirm */}
+      <ConfirmDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        title="Deletar quadro"
+        description={`Deletar "${board.name}"? Todas as colunas e atividades serão removidas.`}
+        confirmLabel="Deletar"
+        loading={removeBoard.isPending}
+        onConfirm={handleDeleteBoard}
+      />
     </div>
   )
 }
