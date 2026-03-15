@@ -199,16 +199,16 @@
 - [x] Redesenhar `src/pages/auth/LoginPage.tsx` com layout split 50/50
   - [x] **Esquerda** — formulário sobre fundo claro (`#f4f4f0`)
     - [x] Logo Bewave (ícone + nome) no topo esquerdo
-    - [x] Tag "Área Restrita" em `#3841D4` acima do título
+    - [x] Tag "Área Restrita" em `#03428E` acima do título
     - [x] Título tipográfico de impacto: "Bem-vindo de volta." com acento colorido
     - [x] Subtítulo descritivo em cinza
     - [x] Campo e-mail com ícone interno e label uppercase
     - [x] Campo senha com ícone interno + toggle de visibilidade
     - [x] Link "Esqueceu a senha?" alinhado à direita
-    - [x] Botão "Entrar" em `#3841D4` com sombra colorida, ícone de seta e hover com elevação
+    - [x] Botão "Entrar" em `#03428E` com sombra colorida, ícone de seta e hover com elevação
     - [x] Exibição de erros de validação inline (Zod)
     - [x] Exibição de erro de credenciais inválidas vindo da API
-  - [x] **Direita** — painel visual com fundo `#3841D4`
+  - [x] **Direita** — painel visual com fundo `#03428E`
     - [x] Elemento decorativo tipográfico de fundo (letra "B" em opacidade baixa)
     - [x] Círculos geométricos decorativos e linha vertical sutil
     - [x] Dois cards flutuantes com métricas reais vindas da API (ex: faturamento do mês, total de clientes ativos)
@@ -224,7 +224,7 @@
 
 - [x] Revisar `src/components/layout/Sidebar.tsx`
   - [x] Ajustar espaçamentos e tipografia dos links de navegação
-  - [x] Melhorar visual do item ativo (borda lateral `#3841D4` + fundo sutil)
+  - [x] Melhorar visual do item ativo (borda lateral `#03428E` + fundo sutil)
   - [x] Polir avatar + nome do usuário no rodapé
 - [x] Revisar `src/components/layout/TopBar.tsx`
   - [x] Garantir consistência visual com a nova identidade da sidebar
@@ -232,8 +232,8 @@
 
 ### 11.3 — Consistência geral
 
-- [x] Revisar `index.css` e garantir que CSS variables reflitam a paleta atualizada (`--primary: #3841D4`)
-- [x] Garantir que todos os botões primários do sistema usem `#3841D4`
+- [x] Revisar `index.css` e garantir que CSS variables reflitam a paleta atualizada (`--primary: #03428E`)
+- [x] Garantir que todos os botões primários do sistema usem `#03428E`
 - [x] Verificar consistência de border-radius, sombras e espaçamentos em todos os módulos
 - [x] Testar dark mode com os novos estilos em todas as páginas
 

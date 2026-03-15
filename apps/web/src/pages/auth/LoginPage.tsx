@@ -78,20 +78,20 @@ export function LoginPage() {
         <div className="mx-auto w-full max-w-md">
           {/* Logo */}
           <div className="mb-12 flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#3841D4]">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#03428E]">
               <span className="font-display text-sm font-bold text-white">B</span>
             </div>
             <span className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">bewave</span>
           </div>
 
           {/* Tag */}
-          <span className="mb-4 inline-block rounded-full bg-[#3841D4]/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-[#3841D4]">
+          <span className="mb-4 inline-block rounded-full bg-[#03428E]/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-[#03428E]">
             Area Restrita
           </span>
 
           {/* Title */}
           <h1 className="mb-2 font-display text-4xl font-extrabold leading-tight text-zinc-900 dark:text-zinc-100">
-            Bem-vindo de volta<span className="text-[#3841D4]">.</span>
+            Bem-vindo de volta<span className="text-[#03428E]">.</span>
           </h1>
           <p className="mb-10 text-sm text-zinc-500 dark:text-zinc-400">
             Acesse o painel de administração com suas credenciais.
@@ -110,7 +110,7 @@ export function LoginPage() {
                   type="email"
                   placeholder="seu@email.com"
                   autoFocus
-                  className="h-11 border-zinc-300 bg-white pl-10 text-zinc-900 placeholder:text-zinc-400 focus-visible:ring-[#3841D4] dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+                  className="h-11 border-zinc-300 bg-white pl-10 text-zinc-900 placeholder:text-zinc-400 focus-visible:ring-[#03428E] dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
                   {...register('email')}
                 />
               </div>
@@ -129,7 +129,7 @@ export function LoginPage() {
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••"
-                  className="h-11 border-zinc-300 bg-white pl-10 pr-10 text-zinc-900 placeholder:text-zinc-400 focus-visible:ring-[#3841D4] dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+                  className="h-11 border-zinc-300 bg-white pl-10 pr-10 text-zinc-900 placeholder:text-zinc-400 focus-visible:ring-[#03428E] dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
                   {...register('password')}
                 />
                 <button
@@ -146,7 +146,7 @@ export function LoginPage() {
             </div>
 
             <div className="flex justify-end">
-              <button type="button" className="text-xs text-[#3841D4] hover:underline">
+              <button type="button" className="text-xs text-[#03428E] hover:underline">
                 Esqueceu a senha?
               </button>
             </div>
@@ -160,7 +160,7 @@ export function LoginPage() {
             <Button
               type="submit"
               disabled={loginMutation.isPending}
-              className="h-11 w-full bg-[#3841D4] text-white shadow-[0_4px_14px_rgba(56,65,212,0.4)] transition-all hover:bg-[#2d35b5] hover:shadow-[0_6px_20px_rgba(56,65,212,0.5)] hover:-translate-y-0.5"
+              className="h-11 w-full bg-[#03428E] text-white shadow-[0_4px_14px_rgba(3,66,142,0.4)] transition-all hover:bg-[#023672] hover:shadow-[0_6px_20px_rgba(3,66,142,0.5)] hover:-translate-y-0.5"
             >
               {loginMutation.isPending ? (
                 <>
@@ -179,7 +179,7 @@ export function LoginPage() {
       </div>
 
       {/* Right — Visual Panel */}
-      <div className="relative hidden w-1/2 overflow-hidden bg-[#3841D4] lg:flex lg:flex-col lg:justify-between lg:p-12">
+      <div className="relative hidden w-1/2 overflow-hidden bg-[#03428E] lg:flex lg:flex-col lg:justify-between lg:p-12">
         {/* Background decorative "B" */}
         <span className="pointer-events-none absolute -right-16 -top-16 select-none font-display text-[28rem] font-extrabold leading-none text-white/[0.04]">
           B
@@ -189,15 +189,6 @@ export function LoginPage() {
         <div className="pointer-events-none absolute left-1/2 top-1/4 h-64 w-64 -translate-x-1/2 rounded-full border border-white/10" />
         <div className="pointer-events-none absolute left-1/2 top-1/4 h-40 w-40 -translate-x-1/2 rounded-full border border-white/[0.06]" />
         <div className="pointer-events-none absolute left-12 top-0 h-full w-px bg-gradient-to-b from-transparent via-white/10 to-transparent" />
-
-        {/* Top — Live tag */}
-        <div className="relative z-10 flex items-center gap-2">
-          <span className="relative flex h-2.5 w-2.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400" />
-          </span>
-          <span className="text-xs font-medium text-white/80">Sistema ao vivo</span>
-        </div>
 
         {/* Center — Floating cards */}
         <div className="relative z-10 space-y-4">

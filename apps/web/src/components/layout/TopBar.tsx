@@ -57,7 +57,7 @@ export function TopBar() {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="h-8 w-8">
               <Avatar className="h-7 w-7">
-                <AvatarFallback className="bg-[#3841D4] text-xs font-semibold text-white">
+                <AvatarFallback className="bg-[#03428E] text-xs font-semibold text-white">
                   {user?.name?.slice(0, 2).toUpperCase() ?? 'U'}
                 </AvatarFallback>
               </Avatar>
