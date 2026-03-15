@@ -1,15 +1,9 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useDroppable } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
-import { Plus, MoreHorizontal, Trash2, GripHorizontal } from 'lucide-react'
+import { Plus, MoreHorizontal, Trash2, GripHorizontal, Pencil } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
 import { ActivityCard } from './ActivityCard'
 import type { Column as ColumnType, Activity } from '@/services/boards.service'
@@ -37,6 +31,19 @@ export function Column({
   const [newTitle, setNewTitle] = useState('')
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [editTitle, setEditTitle] = useState(column.title)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!menuOpen) return
+    function handleClickOutside(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [menuOpen])
 
   const { setNodeRef, isOver } = useDroppable({
     id: `column-${column.id}`,
@@ -105,7 +112,7 @@ export function Column({
           </span>
         </div>
 
-        <div className="flex items-center gap-0.5" data-no-dnd="true">
+        <div className="flex items-center gap-0.5">
           <Button
             variant="ghost"
             size="icon"
@@ -114,25 +121,42 @@ export function Column({
           >
             <Plus className="h-3.5 w-3.5" />
           </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-6 w-6">
-                <MoreHorizontal className="h-3.5 w-3.5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onSelect={() => setIsEditingTitle(true)}>
-                Renomear
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                variant="destructive"
-                onSelect={() => onDelete?.(column.id)}
-              >
-                <Trash2 className="mr-2 h-3.5 w-3.5" />
-                Deletar
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="relative" ref={menuRef}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              <MoreHorizontal className="h-3.5 w-3.5" />
+            </Button>
+            {menuOpen && (
+              <div className="absolute right-0 top-full z-50 mt-1 w-36 rounded-md border border-border bg-popover p-1 shadow-md">
+                <button
+                  type="button"
+                  className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm hover:bg-accent"
+                  onClick={() => {
+                    setMenuOpen(false)
+                    setIsEditingTitle(true)
+                  }}
+                >
+                  <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
+                  Renomear
+                </button>
+                <button
+                  type="button"
+                  className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm text-destructive hover:bg-destructive/10"
+                  onClick={() => {
+                    setMenuOpen(false)
+                    onDelete?.(column.id)
+                  }}
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                  Deletar
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
