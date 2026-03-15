@@ -107,28 +107,31 @@ export function Column({
             size="icon"
             className="h-6 w-6"
             onClick={() => setIsAdding(true)}
+            onPointerDown={(e) => e.stopPropagation()}
           >
             <Plus className="h-3.5 w-3.5" />
           </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-6 w-6">
-                <MoreHorizontal className="h-3.5 w-3.5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onSelect={() => setIsEditingTitle(true)}>
-                Renomear
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                variant="destructive"
-                onSelect={() => onDelete?.(column.id)}
-              >
-                <Trash2 className="mr-2 h-3.5 w-3.5" />
-                Deletar
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div onPointerDown={(e) => e.stopPropagation()}>
+            <DropdownMenu modal={false}>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-6 w-6">
+                  <MoreHorizontal className="h-3.5 w-3.5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onSelect={() => setIsEditingTitle(true)}>
+                  Renomear
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  variant="destructive"
+                  onSelect={() => onDelete?.(column.id)}
+                >
+                  <Trash2 className="mr-2 h-3.5 w-3.5" />
+                  Deletar
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
 
