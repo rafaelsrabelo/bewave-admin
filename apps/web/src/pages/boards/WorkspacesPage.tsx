@@ -69,7 +69,15 @@ export function WorkspacesPage() {
           {workspaces.map((ws) => (
             <Card key={ws.id} className="transition-shadow hover:shadow-md">
               <CardHeader className="pb-3">
-                <CardTitle className="text-base">{ws.name}</CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-base">{ws.name}</CardTitle>
+                  <Link
+                    to={`/workspaces/${ws.id}/boards`}
+                    className="text-xs text-primary hover:underline"
+                  >
+                    Ver boards
+                  </Link>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -93,7 +101,7 @@ export function WorkspacesPage() {
                   {ws.boards.length === 0 ? (
                     <p className="text-xs text-muted-foreground">Nenhum board</p>
                   ) : (
-                    ws.boards.map((b) => (
+                    ws.boards.slice(0, 3).map((b) => (
                       <Link
                         key={b.id}
                         to={`/boards/${b.id}`}
