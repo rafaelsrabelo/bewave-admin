@@ -195,6 +195,47 @@ export class ActivitiesService {
     }
   }
 
+  static async listMine(userId: string, filters: ListActivitiesInput) {
+    const where: Record<string, unknown> = {
+      deletedAt: null,
+      column: { deletedAt: null, board: { deletedAt: null } },
+      assignees: { some: { userId } },
+    }
+
+    if (filters.priority) where.priority = filters.priority
+    if (filters.isCompleted !== undefined) where.isCompleted = filters.isCompleted
+
+    const [items, total] = await prisma.$transaction([
+      prisma.activity.findMany({
+        where,
+        skip: (filters.page - 1) * filters.limit,
+        take: filters.limit,
+        orderBy: [{ dueDate: 'asc' }, { createdAt: 'desc' }],
+        include: {
+          ...activityInclude,
+          column: {
+            select: {
+              id: true,
+              title: true,
+              board: { select: { id: true, name: true, color: true, icon: true } },
+            },
+          },
+        },
+      }),
+      prisma.activity.count({ where }),
+    ])
+
+    return {
+      items,
+      meta: {
+        page: filters.page,
+        limit: filters.limit,
+        total,
+        totalPages: Math.ceil(total / filters.limit),
+      },
+    }
+  }
+
   private static async assertExists(id: string) {
     const activity = await prisma.activity.findFirst({
       where: { id, deletedAt: null },

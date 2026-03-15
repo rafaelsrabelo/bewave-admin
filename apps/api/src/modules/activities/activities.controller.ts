@@ -11,6 +11,12 @@ import {
 import { ok, created, noContent } from '../../shared/utils/response.js'
 
 export class ActivitiesController {
+  static async listMine(req: FastifyRequest, reply: FastifyReply) {
+    const query = listActivitiesSchema.parse(req.query)
+    const result = await ActivitiesService.listMine(req.user.sub, query)
+    return reply.send({ data: result.items, meta: result.meta })
+  }
+
   static async getById(
     req: FastifyRequest<{ Params: { id: string } }>,
     reply: FastifyReply,

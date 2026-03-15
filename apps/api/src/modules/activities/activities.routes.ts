@@ -5,6 +5,7 @@ import { authenticate } from '../../shared/middleware/auth.middleware.js'
 export async function activitiesRoutes(app: FastifyInstance) {
   app.addHook('preHandler', authenticate)
 
+  app.get('/', ActivitiesController.listMine)
   app.get('/:id', ActivitiesController.getById)
   app.post('/', ActivitiesController.create)
   app.put('/:id', ActivitiesController.update)
