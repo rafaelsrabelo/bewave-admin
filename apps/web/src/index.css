@@ -43,6 +43,7 @@
 
   --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, monospace;
+  --font-display: "Syne", "Geist", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
@@ -57,8 +58,8 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
 
-  --primary: oklch(0.488 0.165 275.75);
-  --primary-foreground: oklch(0.97 0 0);
+  --primary: oklch(0.40 0.19 275);
+  --primary-foreground: oklch(0.98 0 0);
 
   --secondary: oklch(0.96 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -74,7 +75,7 @@
 
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: oklch(0.488 0.165 275.75);
+  --ring: oklch(0.40 0.19 275);
 
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
@@ -93,8 +94,8 @@
   --popover: oklch(0.177 0 0);
   --popover-foreground: oklch(0.985 0 0);
 
-  --primary: oklch(0.585 0.18 275.75);
-  --primary-foreground: oklch(0.97 0 0);
+  --primary: oklch(0.50 0.19 275);
+  --primary-foreground: oklch(0.98 0 0);
 
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
@@ -110,7 +111,7 @@
 
   --border: oklch(0.329 0 0);
   --input: oklch(0.329 0 0);
-  --ring: oklch(0.585 0.18 275.75);
+  --ring: oklch(0.50 0.19 275);
 
   --sidebar: oklch(0.141 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
