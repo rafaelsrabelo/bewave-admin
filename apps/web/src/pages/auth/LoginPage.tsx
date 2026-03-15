@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Eye, EyeOff, Loader2, ArrowRight, Mail, Lock, Shield, Clock, Zap } from 'lucide-react'
+import { Eye, EyeOff, Loader2, ArrowRight, Mail, Lock, Shield, Clock, Zap, Moon, Sun } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useLogin } from '@/hooks/useAuth'
+import { useUiStore } from '@/stores/ui.store'
 import logoDark from '@/assets/logo-dark.png'
 import logoWhite from '@/assets/logo-white.png'
 import axios from 'axios'
@@ -60,6 +61,7 @@ export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [credentialError, setCredentialError] = useState<string | null>(null)
   const loginMutation = useLogin()
+  const { theme, toggleTheme } = useUiStore()
   const stats = useLoginStats()
 
   const {
@@ -84,7 +86,17 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="relative flex min-h-screen">
+      {/* Theme toggle */}
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={toggleTheme}
+        className="absolute right-4 top-4 z-20 h-9 w-9 text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 lg:text-white/60 lg:hover:text-white"
+      >
+        {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+      </Button>
+
       {/* Left — Form */}
       <div className="flex w-full flex-col justify-center bg-[#f4f4f0] px-8 py-12 dark:bg-zinc-950 lg:w-1/2 lg:px-16 xl:px-24">
         <div className="mx-auto w-full max-w-md">
