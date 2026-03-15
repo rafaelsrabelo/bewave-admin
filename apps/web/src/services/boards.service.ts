@@ -82,6 +82,11 @@ export const boardsService = {
   },
 
   // Boards
+  async listMyBoards() {
+    const response = await api.get<{ data: Board[] }>('/boards')
+    return response.data.data
+  },
+
   async listBoards(workspaceId: string) {
     const response = await api.get<{ data: Board[] }>('/boards', {
       params: { workspaceId },

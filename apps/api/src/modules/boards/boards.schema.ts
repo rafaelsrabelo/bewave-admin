@@ -20,7 +20,7 @@ export const updateBoardSchema = z.object({
 })
 
 export const listBoardsSchema = z.object({
-  workspaceId: z.string(),
+  workspaceId: z.string().optional(),
   page: z.coerce.number().int().positive().default(1),
   limit: z.coerce.number().int().positive().max(100).default(20),
 })

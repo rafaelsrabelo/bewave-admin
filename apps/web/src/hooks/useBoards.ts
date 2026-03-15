@@ -9,6 +9,13 @@ export function useWorkspaces() {
   })
 }
 
+export function useMyBoards() {
+  return useQuery({
+    queryKey: ['my-boards'],
+    queryFn: boardsService.listMyBoards,
+  })
+}
+
 export function useCreateWorkspace() {
   const queryClient = useQueryClient()
 
@@ -48,10 +55,11 @@ export function useCreateBoard() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['workspaces'] })
       queryClient.invalidateQueries({ queryKey: ['boards'] })
-      toast.success('Board criado')
+      queryClient.invalidateQueries({ queryKey: ['my-boards'] })
+      toast.success('Quadro criado')
     },
     onError: () => {
-      toast.error('Erro ao criar board')
+      toast.error('Erro ao criar quadro')
     },
   })
 }
@@ -80,10 +88,11 @@ export function useRemoveBoard() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['workspaces'] })
       queryClient.invalidateQueries({ queryKey: ['boards'] })
-      toast.success('Board removido')
+      queryClient.invalidateQueries({ queryKey: ['my-boards'] })
+      toast.success('Quadro removido')
     },
     onError: () => {
-      toast.error('Erro ao remover board')
+      toast.error('Erro ao remover quadro')
     },
   })
 }

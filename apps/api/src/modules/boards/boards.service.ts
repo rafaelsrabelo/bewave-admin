@@ -73,7 +73,7 @@ export class BoardsService {
 
   static async list(input: ListBoardsInput, userId: string) {
     const where = {
-      workspaceId: input.workspaceId,
+      ...(input.workspaceId && { workspaceId: input.workspaceId }),
       deletedAt: null,
       members: { some: { userId } },
     }

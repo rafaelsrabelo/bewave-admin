@@ -21,8 +21,7 @@ import { PageHeader } from '@/components/shared/PageHeader'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
-import { useWorkspaces, useCreateWorkspace, useCreateBoard, useRemoveBoard } from '@/hooks/useBoards'
-import type { Workspace } from '@/services/boards.service'
+import { useMyBoards, useWorkspaces, useCreateWorkspace, useCreateBoard, useRemoveBoard } from '@/hooks/useBoards'
 
 const BOARD_COLORS = [
   '#3b82f6', '#ef4444', '#22c55e', '#f59e0b',
@@ -35,17 +34,12 @@ export function WorkspacesPage() {
   const [boardColor, setBoardColor] = useState(BOARD_COLORS[0])
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null)
 
-  const { data: workspaces, isLoading } = useWorkspaces()
+  const { data: boards, isLoading } = useMyBoards()
+  const { data: workspaces } = useWorkspaces()
   const createWorkspace = useCreateWorkspace()
   const createBoard = useCreateBoard()
   const removeBoard = useRemoveBoard()
 
-  // Flatten all boards from all workspaces
-  const allBoards = workspaces?.flatMap((ws: Workspace) =>
-    ws.boards.map((b) => ({ ...b, workspaceId: ws.id, memberCount: ws.members.length })),
-  ) ?? []
-
-  // Get or create default workspace
   function getDefaultWorkspaceId(): Promise<string> {
     if (workspaces && workspaces.length > 0) {
       return Promise.resolve(workspaces[0].id)
@@ -53,9 +47,7 @@ export function WorkspacesPage() {
     return new Promise((resolve) => {
       createWorkspace.mutate(
         { name: 'Meu Workspace' },
-        {
-          onSuccess: (ws) => resolve(ws.id),
-        },
+        { onSuccess: (ws) => resolve(ws.id) },
       )
     })
   }
@@ -100,7 +92,7 @@ export function WorkspacesPage() {
         }
       />
 
-      {allBoards.length === 0 ? (
+      {!boards || boards.length === 0 ? (
         <EmptyState
           icon={Kanban}
           title="Nenhum quadro"
@@ -114,14 +106,13 @@ export function WorkspacesPage() {
         />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {allBoards.map((board) => (
+          {boards.map((board) => (
             <Card key={board.id} className="group relative transition-shadow hover:shadow-md">
               <div
                 className="h-2 rounded-t-lg"
-                style={{ backgroundColor: (board as Record<string, unknown>).color as string ?? '#3b82f6' }}
+                style={{ backgroundColor: board.color ?? '#3b82f6' }}
               />
 
-              {/* Menu */}
               <div className="absolute right-2 top-4 opacity-0 transition-opacity group-hover:opacity-100">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -146,11 +137,23 @@ export function WorkspacesPage() {
 
               <Link to={`/boards/${board.id}`}>
                 <CardContent className="pt-4">
-                  <h3 className="font-semibold">{board.name}</h3>
+                  <div className="flex items-center gap-2">
+                    {board.icon && <span className="text-lg">{board.icon}</span>}
+                    <h3 className="font-semibold">{board.name}</h3>
+                  </div>
+                  {board.description && (
+                    <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
+                      {board.description}
+                    </p>
+                  )}
                   <div className="mt-3 flex items-center gap-4 text-xs text-muted-foreground">
                     <span className="flex items-center gap-1">
                       <Users className="h-3.5 w-3.5" />
-                      {board.memberCount} membro(s)
+                      {board._count?.members ?? 0} membro(s)
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Kanban className="h-3.5 w-3.5" />
+                      {board._count?.columns ?? 0} colunas
                     </span>
                   </div>
                 </CardContent>
@@ -160,7 +163,6 @@ export function WorkspacesPage() {
         </div>
       )}
 
-      {/* Create Board Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -202,7 +204,6 @@ export function WorkspacesPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Delete Confirm */}
       <ConfirmDialog
         open={!!deleteTarget}
         onOpenChange={(open) => !open && setDeleteTarget(null)}

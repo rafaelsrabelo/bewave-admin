@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { X, Check, Calendar, Tag, MessageSquare, Trash2, Send } from 'lucide-react'
+import { X, Check, Calendar, Tag, MessageSquare, Trash2, Send, UserPlus, Users } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { Button } from '@/components/ui/button'
@@ -16,8 +16,9 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { cn } from '@/lib/utils'
-import { useActivity, useUpdateActivity, useToggleComplete, useRemoveActivity } from '@/hooks/useActivities'
+import { useActivity, useUpdateActivity, useToggleComplete, useRemoveActivity, useAddAssignee, useRemoveAssignee } from '@/hooks/useActivities'
 import { useComments, useCreateComment, useRemoveComment } from '@/hooks/useComments'
+import { useBoardMembers } from '@/hooks/useBoards'
 import { useKanbanStore } from '@/stores/kanban.store'
 import { useAuthStore } from '@/stores/auth.store'
 
@@ -36,6 +37,9 @@ export function ActivityPanel({ boardId }: ActivityPanelProps) {
   const removeActivity = useRemoveActivity(boardId)
   const createComment = useCreateComment()
   const removeComment = useRemoveComment()
+  const { data: boardMembers } = useBoardMembers(boardId)
+  const addAssignee = useAddAssignee(boardId)
+  const removeAssigneeHook = useRemoveAssignee(boardId)
 
   const [editingTitle, setEditingTitle] = useState(false)
   const [title, setTitle] = useState('')
@@ -202,6 +206,59 @@ export function ActivityPanel({ boardId }: ActivityPanelProps) {
               <Badge variant="outline" className="text-xs">{activity.column.title}</Badge>
             </div>
           )}
+        </div>
+
+        <Separator />
+
+        {/* Assignees */}
+        <div>
+          <div className="flex items-center gap-1.5 mb-2">
+            <Users className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="text-xs font-medium text-muted-foreground">Responsáveis</span>
+          </div>
+
+          <div className="flex flex-wrap gap-2 mb-2">
+            {activity.assignees.map((a) => (
+              <div key={a.userId} className="flex items-center gap-1.5 rounded-full bg-muted px-2 py-1">
+                <Avatar className="h-5 w-5">
+                  <AvatarFallback className="bg-primary text-primary-foreground text-[8px]">
+                    {a.user.name.slice(0, 2).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="text-xs">{a.user.name}</span>
+                <button
+                  type="button"
+                  className="text-muted-foreground hover:text-destructive"
+                  onClick={() => removeAssigneeHook.mutate({ activityId: activity.id, userId: a.userId })}
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* Add assignee from board members */}
+          {boardMembers && (() => {
+            const assigneeIds = activity.assignees.map((a) => a.userId)
+            const available = boardMembers.filter((m) => !assigneeIds.includes(m.userId))
+            if (available.length === 0) return null
+            return (
+              <div className="space-y-1">
+                {available.map((m) => (
+                  <button
+                    key={m.userId}
+                    type="button"
+                    className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs transition-colors hover:bg-accent"
+                    onClick={() => addAssignee.mutate({ activityId: activity.id, userId: m.userId })}
+                  >
+                    <UserPlus className="h-3.5 w-3.5 text-muted-foreground" />
+                    <span>{m.user.name}</span>
+                    <span className="text-muted-foreground">({m.user.email})</span>
+                  </button>
+                ))}
+              </div>
+            )
+          })()}
         </div>
 
         <Separator />
