@@ -52,6 +52,7 @@ function SortableColumn({
     attributes,
     listeners,
     setNodeRef,
+    setActivatorNodeRef,
     transform,
     transition,
     isDragging,
@@ -75,7 +76,7 @@ function SortableColumn({
         onToggleComplete={onToggleComplete}
         onUpdateTitle={onUpdateTitle}
         onDelete={onDelete}
-        dragHandleProps={{ ...attributes, ...listeners }}
+        dragHandleProps={{ ref: setActivatorNodeRef, ...attributes, ...listeners }}
       />
     </div>
   )
@@ -127,6 +128,11 @@ export function Board({ board, filterUserId }: BoardProps) {
       activationConstraint: { distance: 8 },
     }),
   )
+
+  // dnd-kit picks up pointer events from buttons/dropdowns — we handle
+  // this by only allowing drag from the explicit drag handle, which is
+  // already wired via dragHandleProps on each Column. The sensor's
+  // distance constraint (8px) lets normal clicks through.
 
   const columnIds = useMemo(
     () => board.columns.map((c) => `sortable-col-${c.id}`),

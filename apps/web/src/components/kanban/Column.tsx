@@ -64,15 +64,19 @@ export function Column({
     <div className="flex h-full max-h-[calc(100vh-180px)] w-[280px] shrink-0 flex-col rounded-lg bg-muted/50">
       <div className="flex items-center justify-between px-3 py-2">
         <div className="flex items-center gap-2 min-w-0 flex-1">
-          {dragHandleProps && (
-            <button
-              type="button"
-              className="cursor-grab text-muted-foreground/50 hover:text-muted-foreground active:cursor-grabbing"
-              {...dragHandleProps}
-            >
-              <GripHorizontal className="h-4 w-4" />
-            </button>
-          )}
+          {dragHandleProps && (() => {
+            const { ref, ...rest } = dragHandleProps as { ref?: React.Ref<HTMLButtonElement>; [key: string]: unknown }
+            return (
+              <button
+                type="button"
+                ref={ref}
+                className="cursor-grab text-muted-foreground/50 hover:text-muted-foreground active:cursor-grabbing"
+                {...rest}
+              >
+                <GripHorizontal className="h-4 w-4" />
+              </button>
+            )
+          })()}
           {column.color && (
             <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: column.color }} />
           )}
@@ -101,37 +105,34 @@ export function Column({
           </span>
         </div>
 
-        <div className="flex items-center gap-0.5">
+        <div className="flex items-center gap-0.5" data-no-dnd="true">
           <Button
             variant="ghost"
             size="icon"
             className="h-6 w-6"
             onClick={() => setIsAdding(true)}
-            onPointerDown={(e) => e.stopPropagation()}
           >
             <Plus className="h-3.5 w-3.5" />
           </Button>
-          <div onPointerDown={(e) => e.stopPropagation()}>
-            <DropdownMenu modal={false}>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-6 w-6">
-                  <MoreHorizontal className="h-3.5 w-3.5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onSelect={() => setIsEditingTitle(true)}>
-                  Renomear
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  variant="destructive"
-                  onSelect={() => onDelete?.(column.id)}
-                >
-                  <Trash2 className="mr-2 h-3.5 w-3.5" />
-                  Deletar
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-6 w-6">
+                <MoreHorizontal className="h-3.5 w-3.5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onSelect={() => setIsEditingTitle(true)}>
+                Renomear
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                variant="destructive"
+                onSelect={() => onDelete?.(column.id)}
+              >
+                <Trash2 className="mr-2 h-3.5 w-3.5" />
+                Deletar
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
