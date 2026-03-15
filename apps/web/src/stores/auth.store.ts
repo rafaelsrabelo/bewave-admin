@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 
 type User = {
   id: string
@@ -15,10 +16,21 @@ type AuthState = {
   isAuthenticated: () => boolean
 }
 
-export const useAuthStore = create<AuthState>((set, get) => ({
-  accessToken: null,
-  user: null,
-  setAuth: (accessToken, user) => set({ accessToken, user }),
-  clearAuth: () => set({ accessToken: null, user: null }),
-  isAuthenticated: () => get().accessToken !== null,
-}))
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set, get) => ({
+      accessToken: null,
+      user: null,
+      setAuth: (accessToken, user) => set({ accessToken, user }),
+      clearAuth: () => set({ accessToken: null, user: null }),
+      isAuthenticated: () => get().accessToken !== null,
+    }),
+    {
+      name: 'bewave-auth',
+      partialize: (state) => ({
+        accessToken: state.accessToken,
+        user: state.user,
+      }),
+    },
+  ),
+)

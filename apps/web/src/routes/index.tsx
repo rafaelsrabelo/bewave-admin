@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { PrivateRoute } from './PrivateRoute'
-import { GuestRoute } from './GuestRoute'
+import { PublicRoute } from './PublicRoute'
 import { AppShell } from '@/components/layout/AppShell'
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { DashboardPage } from '@/pages/dashboard/DashboardPage'
@@ -19,7 +19,7 @@ import { NotFoundPage } from '@/pages/NotFoundPage'
 export function AppRoutes() {
   return (
     <Routes>
-      <Route element={<GuestRoute />}>
+      <Route element={<PublicRoute />}>
         <Route path="/login" element={<LoginPage />} />
       </Route>
 

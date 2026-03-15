@@ -239,4 +239,46 @@
 
 ---
 
-**Progresso:** `104 / 104` tasks concluídas
+## FASE 12 — Correções de Autenticação (Bugfix)
+
+> Correções de bugs críticos no fluxo de autenticação identificados após a Fase 11.
+
+### 12.1 — Login: erro de credenciais não deve recarregar a página
+
+- [x] Abrir `src/pages/auth/LoginPage.tsx` e revisar o `onSubmit`
+  - [x] Capturar o erro da chamada `login()` no bloco `catch` e armazená-lo em um `useState<string | null>` local (ex: `credentialError`) — **nunca** recarregar a página ou redirecionar em caso de erro
+  - [x] Exibir a mensagem de erro abaixo do botão de submit sem limpar os campos do formulário
+  - [x] Garantir que o `react-hook-form` **não** tem `shouldUnregister: true` nem está sendo recriado/desmontado ao receber o erro
+  - [x] Limpar o `credentialError` ao usuário começar a digitar novamente (`onChange` em qualquer campo)
+- [x] Abrir `src/lib/axios.ts` e revisar o interceptor de response `401`
+  - [x] Adicionar verificação: se a URL da requisição que gerou o `401` for `/auth/login`, **não fazer nada** — deixar o erro cair no `catch` do chamador normalmente
+  - [x] O redirect para `/login` e o `clearAuth()` no `401` devem acontecer **somente** em rotas autenticadas (token expirado mid-session), nunca na tentativa de login em si
+- [x] Testar: preencher email e senha errados → submeter → mensagem de erro exibida → campos mantidos com os valores digitados → sem reload de página → ao corrigir e submeter com dados válidos, redireciona normalmente
+
+### 12.2 — Rotas protegidas: redirecionamento correto baseado em token
+
+- [x] Revisar `src/routes/PrivateRoute.tsx`
+  - [x] Ler `accessToken` do `auth.store.ts`
+  - [x] Se **sem token**: retornar `<Navigate to="/login" replace />`
+  - [x] Se **com token**: retornar `<Outlet />`
+- [x] Criar `src/routes/PublicRoute.tsx` — rota acessível apenas sem autenticação
+  - [x] Ler `accessToken` do `auth.store.ts`
+  - [x] Se **com token**: retornar `<Navigate to="/dashboard" replace />`
+  - [x] Se **sem token**: retornar `<Outlet />`
+- [x] Aplicar `PublicRoute` como wrapper da rota `/login` em `src/routes/index.tsx`
+- [x] Revisar `src/stores/auth.store.ts` — persistência do token entre reloads
+  - [x] Confirmar que o store usa o middleware `persist` do Zustand com `localStorage` como storage
+  - [x] Confirmar que `accessToken` e `user` estão na lista de campos persistidos
+  - [x] Se não usar `persist`: garantir que `main.tsx` lê o token do `localStorage` e chama `setAuth()` antes da árvore de rotas ser renderizada
+- [x] Garantir que `clearAuth()` remove o token tanto do store quanto do `localStorage`
+- [x] Testar os seguintes cenários:
+  - [x] Usuário **não logado** acessa `/dashboard` via URL → redirecionado para `/login`
+  - [x] Usuário **não logado** acessa `/clients` via URL → redirecionado para `/login`
+  - [x] Usuário **logado** acessa `/login` via URL → redirecionado para `/dashboard`
+  - [x] Usuário **logado** acessa qualquer rota privada normalmente → permanece na página
+  - [x] Usuário faz **logout** → token removido → qualquer rota privada redireciona para `/login`
+  - [x] Usuário **recarrega a página** estando logado → token rehidratado do `localStorage` → permanece autenticado na rota atual
+
+---
+
+**Progresso:** `122 / 122` tasks concluídas
