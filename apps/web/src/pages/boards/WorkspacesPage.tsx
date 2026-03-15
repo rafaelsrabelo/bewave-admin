@@ -122,11 +122,8 @@ export function WorkspacesPage() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem
-                      className="text-destructive"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        setDeleteTarget(board.id)
-                      }}
+                      variant="destructive"
+                      onSelect={() => setDeleteTarget(board.id)}
                     >
                       <Trash2 className="mr-2 h-3.5 w-3.5" />
                       Deletar

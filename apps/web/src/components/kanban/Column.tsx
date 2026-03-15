@@ -117,12 +117,12 @@ export function Column({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setIsEditingTitle(true)}>
+              <DropdownMenuItem onSelect={() => setIsEditingTitle(true)}>
                 Renomear
               </DropdownMenuItem>
               <DropdownMenuItem
-                className="text-destructive"
-                onClick={() => onDelete?.(column.id)}
+                variant="destructive"
+                onSelect={() => onDelete?.(column.id)}
               >
                 <Trash2 className="mr-2 h-3.5 w-3.5" />
                 Deletar
