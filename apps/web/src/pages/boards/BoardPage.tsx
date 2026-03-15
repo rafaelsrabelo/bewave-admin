@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Plus, Users, Trash2 } from 'lucide-react'
+import { Plus, Users, Trash2, Filter } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import {
   Dialog,
   DialogContent,
@@ -28,6 +29,7 @@ export function BoardPage() {
   const [columnTitle, setColumnTitle] = useState('')
   const [membersOpen, setMembersOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
+  const [filterUserId, setFilterUserId] = useState<string | null>(null)
 
   const { data: board, isLoading } = useBoard(id ?? '')
   const createColumn = useCreateColumn(id ?? '')
@@ -108,9 +110,47 @@ export function BoardPage() {
         }
       />
 
+      {/* Filter by member */}
+      {board.members && board.members.length > 0 && (
+        <div className="mb-3 flex items-center gap-2">
+          <Filter className="h-3.5 w-3.5 text-muted-foreground" />
+          <span className="text-xs text-muted-foreground">Filtrar:</span>
+          <button
+            type="button"
+            className={cn(
+              'rounded-full px-2.5 py-1 text-xs transition-colors',
+              !filterUserId ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:bg-accent',
+            )}
+            onClick={() => setFilterUserId(null)}
+          >
+            Todos
+          </button>
+          {board.members.map((m) => (
+            <button
+              key={m.userId}
+              type="button"
+              className={cn(
+                'flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs transition-colors',
+                filterUserId === m.userId
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-muted text-muted-foreground hover:bg-accent',
+              )}
+              onClick={() => setFilterUserId(filterUserId === m.userId ? null : m.userId)}
+            >
+              <Avatar className="h-4 w-4">
+                <AvatarFallback className="text-[7px] bg-primary/20">
+                  {m.user.name.slice(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              {m.user.name.split(' ')[0]}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className="flex flex-1 overflow-hidden">
         <div className={cn('flex-1 overflow-hidden transition-all', isPanelOpen && 'mr-[420px]')}>
-          <Board board={board} />
+          <Board board={board} filterUserId={filterUserId} />
         </div>
 
         {isPanelOpen && <ActivityPanel boardId={board.id} />}

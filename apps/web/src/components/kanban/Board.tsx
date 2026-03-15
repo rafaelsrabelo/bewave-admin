@@ -20,9 +20,10 @@ import type { Board as BoardType, Activity, Column as ColumnType } from '@/servi
 
 type BoardProps = {
   board: BoardType
+  filterUserId?: string | null
 }
 
-export function Board({ board }: BoardProps) {
+export function Board({ board, filterUserId }: BoardProps) {
   const [activeActivity, setActiveActivity] = useState<Activity | null>(null)
   const [deleteColumnId, setDeleteColumnId] = useState<string | null>(null)
 
@@ -123,18 +124,29 @@ export function Board({ board }: BoardProps) {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="flex gap-4 overflow-x-auto pb-4">
-          {board.columns.map((column) => (
+        <div className="flex h-full gap-4 overflow-x-auto pb-4">
+          {board.columns.map((column) => {
+            const filteredColumn = filterUserId
+              ? {
+                  ...column,
+                  activities: column.activities.filter((a) =>
+                    a.assignees.some((assignee) => assignee.userId === filterUserId),
+                  ),
+                }
+              : column
+
+            return (
             <Column
               key={column.id}
-              column={column}
+              column={filteredColumn}
               onCreateActivity={handleCreateActivity}
               onActivityClick={handleActivityClick}
               onToggleComplete={handleToggleComplete}
               onUpdateTitle={handleUpdateColumnTitle}
               onDelete={setDeleteColumnId}
             />
-          ))}
+            )
+          })}
         </div>
 
         <DragOverlay>
