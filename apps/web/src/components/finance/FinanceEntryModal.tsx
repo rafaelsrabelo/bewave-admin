@@ -11,13 +11,30 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { cn } from '@/lib/utils'
+
+const FINANCE_CATEGORIES = [
+  { value: 'tecnologia', label: 'Tecnologia' },
+  { value: 'marketing', label: 'Marketing' },
+  { value: 'atendimento', label: 'Atendimento' },
+  { value: 'comercial', label: 'Comercial' },
+  { value: 'outros', label: 'Outros' },
+] as const
 
 const entrySchema = z.object({
   type: z.enum(['income', 'expense']),
   amount: z.coerce.number().positive('Valor deve ser positivo'),
   description: z.string().min(1, 'Descrição obrigatória'),
-  category: z.string().min(1, 'Categoria obrigatória'),
+  category: z.enum(['tecnologia', 'marketing', 'atendimento', 'comercial', 'outros'], {
+    required_error: 'Categoria obrigatória',
+  }),
   date: z.string().min(1, 'Data obrigatória'),
 })
 
@@ -47,6 +64,7 @@ export function FinanceEntryModal({ open, onOpenChange, onSave, loading }: Finan
   })
 
   const typeValue = watch('type')
+  const categoryValue = watch('category')
 
   function handleClose(isOpen: boolean) {
     if (!isOpen) reset()
@@ -114,8 +132,22 @@ export function FinanceEntryModal({ open, onOpenChange, onSave, loading }: Finan
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="category">Categoria *</Label>
-            <Input id="category" {...register('category')} />
+            <Label>Categoria *</Label>
+            <Select
+              value={categoryValue}
+              onValueChange={(val) => setValue('category', val as EntryFormData['category'], { shouldValidate: true })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Selecione uma categoria" />
+              </SelectTrigger>
+              <SelectContent>
+                {FINANCE_CATEGORIES.map((cat) => (
+                  <SelectItem key={cat.value} value={cat.value}>
+                    {cat.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             {errors.category && <p className="text-sm text-destructive">{errors.category.message}</p>}
           </div>
 

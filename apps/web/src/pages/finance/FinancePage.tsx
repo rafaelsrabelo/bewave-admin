@@ -82,7 +82,9 @@ export function FinancePage() {
     {
       key: 'category',
       header: 'Categoria',
-      render: (e: Entry) => <span className="text-muted-foreground">{e.category}</span>,
+      render: (e: Entry) => (
+        <span className="text-muted-foreground capitalize">{e.category}</span>
+      ),
     },
     {
       key: 'amount',
