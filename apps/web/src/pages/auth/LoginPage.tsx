@@ -6,6 +6,8 @@ import { Eye, EyeOff, Loader2, ArrowRight, Mail, Lock, Shield, Clock, Zap } from
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useLogin } from '@/hooks/useAuth'
+import logoDark from '@/assets/logo-dark.png'
+import logoWhite from '@/assets/logo-white.png'
 import axios from 'axios'
 
 const loginSchema = z.object({
@@ -87,11 +89,9 @@ export function LoginPage() {
       <div className="flex w-full flex-col justify-center bg-[#f4f4f0] px-8 py-12 dark:bg-zinc-950 lg:w-1/2 lg:px-16 xl:px-24">
         <div className="mx-auto w-full max-w-md">
           {/* Logo */}
-          <div className="mb-12 flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#03428E]">
-              <span className="font-display text-sm font-bold text-white">B</span>
-            </div>
-            <span className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">bewave</span>
+          <div className="mb-12">
+            <img src={logoDark} alt="Bewave" className="hidden h-10 dark:block" />
+            <img src={logoWhite} alt="Bewave" className="block h-10 dark:hidden" />
           </div>
 
           {/* Tag */}

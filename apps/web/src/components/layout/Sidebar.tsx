@@ -12,6 +12,8 @@ import {
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/stores/auth.store'
 import { useUiStore } from '@/stores/ui.store'
+import logoDark from '@/assets/logo-dark.png'
+import logoWhite from '@/assets/logo-white.png'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
@@ -40,11 +42,9 @@ export function Sidebar() {
       {/* Header */}
       <div className="flex h-14 items-center justify-between px-4">
         {sidebarOpen && (
-          <div className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#03428E]">
-              <span className="font-display text-xs font-bold text-white">B</span>
-            </div>
-            <span className="text-base font-bold text-foreground">bewave</span>
+          <div className="flex items-center">
+            <img src={logoDark} alt="Bewave" className="hidden h-7 dark:block" />
+            <img src={logoWhite} alt="Bewave" className="block h-7 dark:hidden" />
           </div>
         )}
         <Button

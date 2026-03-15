@@ -74,7 +74,10 @@ export function TopBar() {
               Perfil
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => logoutMutation.mutate()} className="text-destructive">
+            <DropdownMenuItem
+              variant="destructive"
+              onSelect={() => logoutMutation.mutate()}
+            >
               <LogOut className="mr-2 h-4 w-4" />
               Sair
             </DropdownMenuItem>
