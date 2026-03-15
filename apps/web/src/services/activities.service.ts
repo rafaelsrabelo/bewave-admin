@@ -62,6 +62,11 @@ export const activitiesService = {
   async removeAssignee(activityId: string, userId: string) {
     await api.delete(`/activities/${activityId}/assignees/${userId}`)
   },
+
+  async listMine(params?: { isCompleted?: boolean; limit?: number }) {
+    const response = await api.get<{ data: Activity[] }>('/activities', { params })
+    return response.data.data
+  },
 }
 
 export type { CreateActivityInput, UpdateActivityInput }

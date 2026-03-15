@@ -3,6 +3,14 @@ import { activitiesService } from '@/services/activities.service'
 import type { CreateActivityInput, UpdateActivityInput } from '@/services/activities.service'
 import { toast } from 'sonner'
 
+export function useMyActivities(params?: { isCompleted?: boolean; limit?: number }) {
+  return useQuery({
+    queryKey: ['my-activities', params],
+    queryFn: () => activitiesService.listMine(params),
+    staleTime: 30 * 1000,
+  })
+}
+
 export function useActivity(activityId: string | null) {
   return useQuery({
     queryKey: ['activity', activityId],

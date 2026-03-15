@@ -11,7 +11,7 @@ import { ClientFormPage } from '@/pages/clients/ClientFormPage'
 import { ClientDetailPage } from '@/pages/clients/ClientDetailPage'
 import { PlansPage } from '@/pages/plans/PlansPage'
 import { PlanFormPage } from '@/pages/plans/PlanFormPage'
-import { WorkspacesPage } from '@/pages/boards/WorkspacesPage'
+import { BoardsHomePage } from '@/pages/boards/BoardsHomePage'
 import { BoardPage } from '@/pages/boards/BoardPage'
 import { FinancePage } from '@/pages/finance/FinancePage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
@@ -36,7 +36,7 @@ export function AppRoutes() {
           <Route path="/plans" element={<PlansPage />} />
           <Route path="/plans/new" element={<PlanFormPage />} />
           <Route path="/plans/:id/edit" element={<PlanFormPage />} />
-          <Route path="/boards" element={<WorkspacesPage />} />
+          <Route path="/boards" element={<BoardsHomePage />} />
           <Route path="/boards/:id" element={<BoardPage />} />
           <Route path="/finance" element={<FinancePage />} />
         </Route>
