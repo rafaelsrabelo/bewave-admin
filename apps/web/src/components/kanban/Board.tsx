@@ -13,7 +13,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { Column } from './Column'
 import { ActivityCard } from './ActivityCard'
 import { ActivityModal } from './ActivityModal'
-import { useCreateActivity, useUpdateActivity, useMoveActivity } from '@/hooks/useBoards'
+import { useCreateActivity, useUpdateActivity, useMoveActivity } from '@/hooks/useActivities'
 import type { Board as BoardType, Activity, Column as ColumnType } from '@/services/boards.service'
 
 type BoardProps = {
@@ -88,7 +88,7 @@ export function Board({ board }: BoardProps) {
         return { ...old, columns: newColumns }
       })
 
-      moveActivity.mutate({ id: activityId, data: { columnId: targetColumnId, position: targetPosition } })
+      moveActivity.mutate({ activityId, data: { columnId: targetColumnId, position: targetPosition } })
     },
     [board, queryClient, moveActivity],
   )
@@ -105,7 +105,7 @@ export function Board({ board }: BoardProps) {
   function handleSaveActivity(data: { title: string; description?: string; priority: string; category?: string }) {
     if (editingActivity) {
       updateActivity.mutate(
-        { id: editingActivity.id, data },
+        { activityId: editingActivity.id, data },
         { onSettled: () => setModalOpen(false) },
       )
     }

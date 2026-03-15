@@ -1,5 +1,12 @@
 import { api } from '@/lib/axios'
 
+type BoardMember = {
+  boardId: string
+  userId: string
+  role: string
+  user: { id: string; name: string; email: string }
+}
+
 type Workspace = {
   id: string
   name: string
@@ -15,16 +22,23 @@ type Workspace = {
 type Board = {
   id: string
   name: string
+  description: string | null
+  color: string | null
+  icon: string | null
   workspaceId: string
   columns: Column[]
+  members: BoardMember[]
+  _count?: { members: number; columns: number }
 }
 
 type Column = {
   id: string
   title: string
   position: number
+  color: string | null
   boardId: string
   activities: Activity[]
+  _count?: { activities: number }
 }
 
 type Activity = {
@@ -35,14 +49,28 @@ type Activity = {
   category: string | null
   position: number
   columnId: string
+  dueDate: string | null
+  completedAt: string | null
+  isCompleted: boolean
+  coverColor: string | null
+  tags: string[]
   createdAt: string
   assignees: Array<{
     userId: string
     user: { id: string; name: string }
   }>
+  _count?: { comments: number }
+  comments?: Array<{
+    id: string
+    content: string
+    createdAt: string
+    user: { id: string; name: string }
+  }>
+  column?: { id: string; title: string; boardId: string }
 }
 
 export const boardsService = {
+  // Workspaces
   async listWorkspaces() {
     const response = await api.get<{ data: Workspace[] }>('/workspaces')
     return response.data.data
@@ -53,60 +81,52 @@ export const boardsService = {
     return response.data.data
   },
 
+  // Boards
   async listBoards(workspaceId: string) {
-    const response = await api.get<{ data: Array<{ id: string; name: string }> }>(
-      `/workspaces/${workspaceId}/boards`,
-    )
+    const response = await api.get<{ data: Board[] }>('/boards', {
+      params: { workspaceId },
+    })
     return response.data.data
   },
 
-  async createBoard(workspaceId: string, data: { name: string }) {
-    const response = await api.post<{ data: Board }>(
-      `/workspaces/${workspaceId}/boards`,
-      data,
-    )
-    return response.data.data
-  },
-
-  async getBoardWithColumns(boardId: string) {
+  async getById(boardId: string) {
     const response = await api.get<{ data: Board }>(`/boards/${boardId}`)
     return response.data.data
   },
 
-  async createColumn(boardId: string, data: { title: string; position: number }) {
-    const response = await api.post<{ data: Column }>(
-      `/boards/${boardId}/columns`,
-      data,
-    )
+  async createBoard(data: { name: string; description?: string; color?: string; icon?: string; workspaceId: string }) {
+    const response = await api.post<{ data: Board }>('/boards', data)
     return response.data.data
   },
 
-  async createActivity(data: { columnId: string; title: string; description?: string; priority?: string; category?: string }) {
-    const response = await api.post<{ data: Activity }>('/activities', data)
+  async updateBoard(boardId: string, data: { name?: string; description?: string; color?: string; icon?: string }) {
+    const response = await api.put<{ data: Board }>(`/boards/${boardId}`, data)
     return response.data.data
   },
 
-  async updateActivity(id: string, data: { title?: string; description?: string; priority?: string; category?: string }) {
-    const response = await api.put<{ data: Activity }>(`/activities/${id}`, data)
+  async removeBoard(boardId: string) {
+    await api.delete(`/boards/${boardId}`)
+  },
+
+  // Board Members
+  async listMembers(boardId: string) {
+    const response = await api.get<{ data: BoardMember[] }>(`/boards/${boardId}/members`)
     return response.data.data
   },
 
-  async moveActivity(id: string, data: { columnId: string; position: number }) {
-    const response = await api.patch<{ data: Activity }>(`/activities/${id}/move`, data)
+  async addMember(boardId: string, userId: string, role?: string) {
+    const response = await api.post<{ data: BoardMember }>(`/boards/${boardId}/members`, { userId, role })
     return response.data.data
   },
 
-  async deleteActivity(id: string) {
-    await api.delete(`/activities/${id}`)
+  async updateMemberRole(boardId: string, userId: string, role: string) {
+    const response = await api.put<{ data: BoardMember }>(`/boards/${boardId}/members/${userId}`, { userId, role })
+    return response.data.data
   },
 
-  async addAssignee(activityId: string, userId: string) {
-    await api.post(`/activities/${activityId}/assignees`, { userId })
-  },
-
-  async removeAssignee(activityId: string, userId: string) {
-    await api.delete(`/activities/${activityId}/assignees/${userId}`)
+  async removeMember(boardId: string, userId: string) {
+    await api.delete(`/boards/${boardId}/members/${userId}`)
   },
 }
 
-export type { Workspace, Board, Column, Activity }
+export type { Workspace, Board, Column, Activity, BoardMember }

@@ -24,13 +24,30 @@ export function useCreateWorkspace() {
   })
 }
 
-export function useCreateBoard(workspaceId: string) {
+export function useBoards(workspaceId: string) {
+  return useQuery({
+    queryKey: ['boards', workspaceId],
+    queryFn: () => boardsService.listBoards(workspaceId),
+    enabled: !!workspaceId,
+  })
+}
+
+export function useBoard(boardId: string) {
+  return useQuery({
+    queryKey: ['board', boardId],
+    queryFn: () => boardsService.getById(boardId),
+    enabled: !!boardId,
+  })
+}
+
+export function useCreateBoard() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (data: { name: string }) => boardsService.createBoard(workspaceId, data),
+    mutationFn: boardsService.createBoard,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['workspaces'] })
+      queryClient.invalidateQueries({ queryKey: ['boards'] })
       toast.success('Board criado')
     },
     onError: () => {
@@ -39,85 +56,92 @@ export function useCreateBoard(workspaceId: string) {
   })
 }
 
-export function useBoardWithColumns(boardId: string) {
+export function useUpdateBoard() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ boardId, data }: { boardId: string; data: Parameters<typeof boardsService.updateBoard>[1] }) =>
+      boardsService.updateBoard(boardId, data),
+    onSuccess: (_, { boardId }) => {
+      queryClient.invalidateQueries({ queryKey: ['board', boardId] })
+      toast.success('Board atualizado')
+    },
+    onError: () => {
+      toast.error('Erro ao atualizar board')
+    },
+  })
+}
+
+export function useRemoveBoard() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: boardsService.removeBoard,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['workspaces'] })
+      queryClient.invalidateQueries({ queryKey: ['boards'] })
+      toast.success('Board removido')
+    },
+    onError: () => {
+      toast.error('Erro ao remover board')
+    },
+  })
+}
+
+export function useBoardMembers(boardId: string) {
   return useQuery({
-    queryKey: ['board', boardId],
-    queryFn: () => boardsService.getBoardWithColumns(boardId),
+    queryKey: ['board-members', boardId],
+    queryFn: () => boardsService.listMembers(boardId),
     enabled: !!boardId,
   })
 }
 
-export function useCreateColumn(boardId: string) {
+export function useAddBoardMember() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (data: { title: string; position: number }) =>
-      boardsService.createColumn(boardId, data),
-    onSuccess: () => {
+    mutationFn: ({ boardId, userId, role }: { boardId: string; userId: string; role?: string }) =>
+      boardsService.addMember(boardId, userId, role),
+    onSuccess: (_, { boardId }) => {
+      queryClient.invalidateQueries({ queryKey: ['board-members', boardId] })
       queryClient.invalidateQueries({ queryKey: ['board', boardId] })
+      toast.success('Membro adicionado')
     },
     onError: () => {
-      toast.error('Erro ao criar coluna')
+      toast.error('Erro ao adicionar membro')
     },
   })
 }
 
-export function useCreateActivity(boardId: string) {
+export function useUpdateBoardMemberRole() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: boardsService.createActivity,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['board', boardId] })
+    mutationFn: ({ boardId, userId, role }: { boardId: string; userId: string; role: string }) =>
+      boardsService.updateMemberRole(boardId, userId, role),
+    onSuccess: (_, { boardId }) => {
+      queryClient.invalidateQueries({ queryKey: ['board-members', boardId] })
+      toast.success('Role atualizada')
     },
     onError: () => {
-      toast.error('Erro ao criar atividade')
+      toast.error('Erro ao atualizar role')
     },
   })
 }
 
-export function useUpdateActivity(boardId: string) {
+export function useRemoveBoardMember() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Parameters<typeof boardsService.updateActivity>[1] }) =>
-      boardsService.updateActivity(id, data),
-    onSuccess: () => {
+    mutationFn: ({ boardId, userId }: { boardId: string; userId: string }) =>
+      boardsService.removeMember(boardId, userId),
+    onSuccess: (_, { boardId }) => {
+      queryClient.invalidateQueries({ queryKey: ['board-members', boardId] })
       queryClient.invalidateQueries({ queryKey: ['board', boardId] })
+      toast.success('Membro removido')
     },
     onError: () => {
-      toast.error('Erro ao atualizar atividade')
-    },
-  })
-}
-
-export function useMoveActivity(boardId: string) {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: { columnId: string; position: number } }) =>
-      boardsService.moveActivity(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['board', boardId] })
-    },
-    onError: () => {
-      toast.error('Erro ao mover atividade')
-      queryClient.invalidateQueries({ queryKey: ['board', boardId] })
-    },
-  })
-}
-
-export function useDeleteActivity(boardId: string) {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: boardsService.deleteActivity,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['board', boardId] })
-      toast.success('Atividade removida')
-    },
-    onError: () => {
-      toast.error('Erro ao remover atividade')
+      toast.error('Erro ao remover membro')
     },
   })
 }

@@ -13,14 +13,15 @@ import {
 import { PageHeader } from '@/components/shared/PageHeader'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { Board } from '@/components/kanban/Board'
-import { useBoardWithColumns, useCreateColumn } from '@/hooks/useBoards'
+import { useBoard } from '@/hooks/useBoards'
+import { useCreateColumn } from '@/hooks/useColumns'
 
 export function BoardPage() {
   const { id } = useParams()
   const [dialogOpen, setDialogOpen] = useState(false)
   const [columnTitle, setColumnTitle] = useState('')
 
-  const { data: board, isLoading } = useBoardWithColumns(id ?? '')
+  const { data: board, isLoading } = useBoard(id ?? '')
   const createColumn = useCreateColumn(id ?? '')
 
   function handleCreateColumn() {
