@@ -2,13 +2,16 @@ import { prisma } from '../../lib/prisma.js'
 import { AppError } from '../../shared/errors/app-error.js'
 import type {
   CreateWorkspaceInput,
-  AddMemberInput,
+  AddWorkspaceMemberInput,
   CreateBoardInput,
-  CreateColumnInput,
-  UpdateColumnInput,
+  UpdateBoardInput,
+  ListBoardsInput,
+  AddBoardMemberInput,
 } from './boards.schema.js'
 
 export class BoardsService {
+  // ── Workspaces ──
+
   static async listWorkspaces(userId: string) {
     return prisma.workspace.findMany({
       where: {
@@ -21,6 +24,7 @@ export class BoardsService {
           },
         },
         boards: {
+          where: { deletedAt: null },
           select: { id: true, name: true },
           orderBy: { createdAt: 'desc' },
         },
@@ -47,7 +51,7 @@ export class BoardsService {
     })
   }
 
-  static async addMember(workspaceId: string, data: AddMemberInput) {
+  static async addWorkspaceMember(workspaceId: string, data: AddWorkspaceMemberInput) {
     return prisma.workspaceMember.create({
       data: {
         workspaceId,
@@ -57,7 +61,7 @@ export class BoardsService {
     })
   }
 
-  static async removeMember(workspaceId: string, userId: string) {
+  static async removeWorkspaceMember(workspaceId: string, userId: string) {
     await prisma.workspaceMember.delete({
       where: {
         workspaceId_userId: { workspaceId, userId },
@@ -65,27 +69,45 @@ export class BoardsService {
     })
   }
 
-  static async listBoards(workspaceId: string) {
-    return prisma.board.findMany({
-      where: { workspaceId },
-      orderBy: { createdAt: 'desc' },
-    })
-  }
+  // ── Boards ──
 
-  static async createBoard(workspaceId: string, data: CreateBoardInput) {
-    return prisma.board.create({
-      data: {
-        name: data.name,
-        workspaceId,
+  static async list(input: ListBoardsInput, userId: string) {
+    const where = {
+      workspaceId: input.workspaceId,
+      deletedAt: null,
+      members: { some: { userId } },
+    }
+
+    const [items, total] = await prisma.$transaction([
+      prisma.board.findMany({
+        where,
+        skip: (input.page - 1) * input.limit,
+        take: input.limit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          _count: { select: { members: true, columns: true } },
+        },
+      }),
+      prisma.board.count({ where }),
+    ])
+
+    return {
+      items,
+      meta: {
+        page: input.page,
+        limit: input.limit,
+        total,
+        totalPages: Math.ceil(total / input.limit),
       },
-    })
+    }
   }
 
-  static async getBoardWithColumns(boardId: string) {
-    const board = await prisma.board.findUnique({
-      where: { id: boardId },
+  static async findById(boardId: string, userId: string) {
+    const board = await prisma.board.findFirst({
+      where: { id: boardId, deletedAt: null },
       include: {
         columns: {
+          where: { deletedAt: null },
           orderBy: { position: 'asc' },
           include: {
             activities: {
@@ -97,8 +119,14 @@ export class BoardsService {
                     user: { select: { id: true, name: true } },
                   },
                 },
+                _count: { select: { comments: true } },
               },
             },
+          },
+        },
+        members: {
+          include: {
+            user: { select: { id: true, name: true, email: true } },
           },
         },
       },
@@ -108,29 +136,128 @@ export class BoardsService {
       throw new AppError('BOARD_NOT_FOUND', 'Board não encontrado', 404)
     }
 
+    const isMember = board.members.some((m) => m.userId === userId)
+    if (!isMember) {
+      throw new AppError('BOARD_ACCESS_DENIED', 'Você não é membro deste board', 403)
+    }
+
     return board
   }
 
-  static async createColumn(boardId: string, data: CreateColumnInput) {
-    return prisma.column.create({
+  static async create(data: CreateBoardInput, creatorUserId: string) {
+    return prisma.board.create({
       data: {
-        title: data.title,
-        position: data.position,
-        boardId,
+        name: data.name,
+        description: data.description,
+        color: data.color,
+        icon: data.icon,
+        workspaceId: data.workspaceId,
+        members: {
+          create: { userId: creatorUserId, role: 'admin' },
+        },
+      },
+      include: {
+        _count: { select: { members: true, columns: true } },
       },
     })
   }
 
-  static async updateColumn(columnId: string, data: UpdateColumnInput) {
-    return prisma.column.update({
-      where: { id: columnId },
+  static async update(boardId: string, data: UpdateBoardInput, userId: string) {
+    await this.assertMember(boardId, userId)
+
+    return prisma.board.update({
+      where: { id: boardId },
       data,
     })
   }
 
-  static async deleteColumn(columnId: string) {
-    await prisma.column.delete({
-      where: { id: columnId },
+  static async remove(boardId: string, userId: string) {
+    await this.assertAdmin(boardId, userId)
+
+    return prisma.board.update({
+      where: { id: boardId },
+      data: { deletedAt: new Date() },
     })
+  }
+
+  // ── Board Members ──
+
+  static async listMembers(boardId: string, userId: string) {
+    await this.assertMember(boardId, userId)
+
+    return prisma.boardMember.findMany({
+      where: { boardId },
+      include: {
+        user: { select: { id: true, name: true, email: true } },
+      },
+    })
+  }
+
+  static async addMember(boardId: string, userId: string, data: AddBoardMemberInput) {
+    await this.assertAdmin(boardId, userId)
+
+    return prisma.boardMember.create({
+      data: {
+        boardId,
+        userId: data.userId,
+        role: data.role,
+      },
+      include: {
+        user: { select: { id: true, name: true, email: true } },
+      },
+    })
+  }
+
+  static async removeMember(boardId: string, userId: string, targetUserId: string) {
+    const member = await this.getMember(boardId, userId)
+
+    if (userId !== targetUserId && member.role !== 'admin') {
+      throw new AppError('BOARD_ACCESS_DENIED', 'Apenas admins podem remover membros', 403)
+    }
+
+    await prisma.boardMember.delete({
+      where: {
+        boardId_userId: { boardId, userId: targetUserId },
+      },
+    })
+  }
+
+  static async updateMemberRole(boardId: string, userId: string, targetUserId: string, role: string) {
+    await this.assertAdmin(boardId, userId)
+
+    return prisma.boardMember.update({
+      where: {
+        boardId_userId: { boardId, userId: targetUserId },
+      },
+      data: { role },
+      include: {
+        user: { select: { id: true, name: true, email: true } },
+      },
+    })
+  }
+
+  // ── Helpers ──
+
+  private static async getMember(boardId: string, userId: string) {
+    const member = await prisma.boardMember.findUnique({
+      where: { boardId_userId: { boardId, userId } },
+    })
+
+    if (!member) {
+      throw new AppError('BOARD_ACCESS_DENIED', 'Você não é membro deste board', 403)
+    }
+
+    return member
+  }
+
+  private static async assertMember(boardId: string, userId: string) {
+    await this.getMember(boardId, userId)
+  }
+
+  private static async assertAdmin(boardId: string, userId: string) {
+    const member = await this.getMember(boardId, userId)
+    if (member.role !== 'admin') {
+      throw new AppError('BOARD_ACCESS_DENIED', 'Apenas admins podem executar esta ação', 403)
+    }
   }
 }
