@@ -54,12 +54,16 @@ export function FinanceEntryModal({ open, onOpenChange, onSave, loading }: Finan
     watch,
     setValue,
     reset,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<EntryFormData>({
     resolver: zodResolver(entrySchema),
+    mode: 'onChange',
     defaultValues: {
       type: 'income',
       date: new Date().toISOString().split('T')[0],
+      description: '',
+      category: undefined,
+      amount: undefined,
     },
   })
 
@@ -67,12 +71,27 @@ export function FinanceEntryModal({ open, onOpenChange, onSave, loading }: Finan
   const categoryValue = watch('category')
 
   function handleClose(isOpen: boolean) {
-    if (!isOpen) reset()
+    if (!isOpen) {
+      reset({
+        type: 'income',
+        date: new Date().toISOString().split('T')[0],
+        description: '',
+        category: undefined,
+        amount: undefined,
+      })
+    }
     onOpenChange(isOpen)
   }
 
   function handleSave(data: EntryFormData) {
     onSave({ ...data, amount: Math.round(data.amount * 100) })
+    reset({
+      type: 'income',
+      date: new Date().toISOString().split('T')[0],
+      description: '',
+      category: undefined,
+      amount: undefined,
+    })
   }
 
   return (
@@ -155,7 +174,7 @@ export function FinanceEntryModal({ open, onOpenChange, onSave, loading }: Finan
             <Button type="button" variant="outline" onClick={() => handleClose(false)}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={!isValid || loading}>
               {loading ? 'Salvando...' : 'Salvar'}
             </Button>
           </DialogFooter>
