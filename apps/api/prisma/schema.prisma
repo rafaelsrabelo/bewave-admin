@@ -63,6 +63,8 @@ model User {
 
   workspaces WorkspaceMember[]
   activities ActivityAssignee[]
+  boardMembers BoardMember[]
+  comments     ActivityComment[]
 
   @@map("users")
 }
@@ -138,22 +140,40 @@ model WorkspaceMember {
 model Board {
   id          String    @id @default(cuid())
   name        String
+  description String?
+  color       String?
+  icon        String?
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   workspaceId String
   createdAt   DateTime  @default(now())
+  deletedAt   DateTime?
 
   columns Column[]
+  members BoardMember[]
 
   @@map("boards")
 }
 
+model BoardMember {
+  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  boardId String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+  role    String @default("member")
+
+  @@id([boardId, userId])
+  @@map("board_members")
+}
+
 model Column {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   title     String
-  position  Int      @default(0)
-  board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  position  Int       @default(0)
+  color     String?
+  board     Board     @relation(fields: [boardId], references: [id], onDelete: Cascade)
   boardId   String
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
 
   activities Activity[]
 
@@ -167,6 +187,11 @@ model Activity {
   priority    ActivityPriority @default(medium)
   category    String?
   position    Int              @default(0)
+  dueDate     DateTime?
+  completedAt DateTime?
+  isCompleted Boolean          @default(false)
+  coverColor  String?
+  tags        String[]
   column      Column           @relation(fields: [columnId], references: [id], onDelete: Cascade)
   columnId    String
   createdAt   DateTime         @default(now())
@@ -174,6 +199,7 @@ model Activity {
   deletedAt   DateTime?
 
   assignees ActivityAssignee[]
+  comments  ActivityComment[]
 
   @@map("activities")
 }
@@ -186,6 +212,19 @@ model ActivityAssignee {
 
   @@id([activityId, userId])
   @@map("activity_assignees")
+}
+
+model ActivityComment {
+  id         String   @id @default(cuid())
+  content    String
+  activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  activityId String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("activity_comments")
 }
 
 model FinanceEntry {
