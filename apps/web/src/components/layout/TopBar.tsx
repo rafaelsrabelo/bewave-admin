@@ -17,6 +17,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard': 'Dashboard',
   '/users': 'Usuários',
   '/clients': 'Clientes',
+  '/plans': 'Planos',
   '/boards': 'Quadros',
   '/finance': 'Financeiro',
 }
@@ -36,20 +37,27 @@ export function TopBar() {
     <header className="flex h-14 items-center justify-between border-b border-border bg-background px-6">
       <h1 className="text-lg font-semibold text-foreground">{currentTitle}</h1>
 
-      <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-8 w-8">
-          {theme === 'dark' ? (
-            <Sun className="h-4 w-4" />
-          ) : (
-            <Moon className="h-4 w-4" />
-          )}
+      <div className="flex items-center gap-1">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleTheme}
+          className="h-8 w-8 text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <div className="relative h-4 w-4">
+            {theme === 'dark' ? (
+              <Sun className="h-4 w-4 transition-transform duration-300" />
+            ) : (
+              <Moon className="h-4 w-4 transition-transform duration-300" />
+            )}
+          </div>
         </Button>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="h-8 w-8">
               <Avatar className="h-7 w-7">
-                <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                <AvatarFallback className="bg-[#3841D4] text-xs font-semibold text-white">
                   {user?.name?.slice(0, 2).toUpperCase() ?? 'U'}
                 </AvatarFallback>
               </Avatar>
