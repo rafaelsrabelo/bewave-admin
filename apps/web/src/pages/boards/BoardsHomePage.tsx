@@ -1,12 +1,11 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Plus, Kanban, Calendar, Check, CheckCircle2 } from 'lucide-react'
-import { format, isToday, isFuture, isPast } from 'date-fns'
+import { Plus, Kanban, CheckCircle2 } from 'lucide-react'
+import { format, isPast } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
@@ -22,13 +21,6 @@ const BOARD_COLORS = [
   '#8b5cf6', '#ec4899', '#06b6d4', '#f97316',
 ]
 
-const priorityConfig: Record<string, { label: string; className: string }> = {
-  urgent: { label: 'Urgente', className: 'bg-red-500/10 text-red-500' },
-  high: { label: 'Alta', className: 'bg-amber-500/10 text-amber-500' },
-  medium: { label: 'Média', className: 'bg-blue-500/10 text-blue-500' },
-  low: { label: 'Baixa', className: 'bg-zinc-500/10 text-zinc-400' },
-}
-
 function getGreeting(): string {
   const hour = new Date().getHours()
   if (hour < 12) return 'Bom dia'
@@ -38,29 +30,6 @@ function getGreeting(): string {
 
 function parseDateLocal(dateStr: string): Date {
   return new Date(dateStr.split('T')[0] + 'T12:00:00')
-}
-
-function groupActivities(activities: Activity[]) {
-  const today: Activity[] = []
-  const upcoming: Activity[] = []
-  const noDate: Activity[] = []
-
-  for (const a of activities) {
-    if (!a.dueDate) {
-      noDate.push(a)
-    } else {
-      const d = parseDateLocal(a.dueDate)
-      if (isToday(d)) {
-        today.push(a)
-      } else if (isFuture(d)) {
-        upcoming.push(a)
-      } else {
-        today.push(a) // overdue goes with "today"
-      }
-    }
-  }
-
-  return { today, upcoming, noDate }
 }
 
 export function BoardsHomePage() {
@@ -80,7 +49,6 @@ export function BoardsHomePage() {
   const createBoard = useCreateBoard()
   const removeBoard = useRemoveBoard()
 
-  const grouped = activities ? groupActivities(activities) : null
 
   function getDefaultWorkspaceId(): Promise<string> {
     if (workspaces && workspaces.length > 0) return Promise.resolve(workspaces[0].id)
@@ -212,28 +180,41 @@ export function BoardsHomePage() {
                   <p className="text-sm text-muted-foreground">Nenhuma atividade atribuída a você</p>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  {grouped && grouped.today.length > 0 && (
-                    <ActivitySection
-                      title="Hoje"
-                      activities={grouped.today}
-                      onActivityClick={handleActivityClick}
-                    />
-                  )}
-                  {grouped && grouped.upcoming.length > 0 && (
-                    <ActivitySection
-                      title="Próximas"
-                      activities={grouped.upcoming}
-                      onActivityClick={handleActivityClick}
-                    />
-                  )}
-                  {grouped && grouped.noDate.length > 0 && (
-                    <ActivitySection
-                      title="Sem data"
-                      activities={grouped.noDate}
-                      onActivityClick={handleActivityClick}
-                    />
-                  )}
+                <div className="space-y-1">
+                  {activities.map((activity) => {
+                    const dueDateLocal = activity.dueDate ? parseDateLocal(activity.dueDate) : null
+                    const isOverdue = dueDateLocal && isPast(dueDateLocal) && !activity.isCompleted
+                    const board = (activity.column as { board?: { id: string; name: string; color: string | null } })?.board
+
+                    return (
+                      <button
+                        key={activity.id}
+                        type="button"
+                        className="flex w-full items-center gap-3 rounded-lg px-2 py-2.5 text-left transition-colors hover:bg-accent"
+                        onClick={() => handleActivityClick(activity)}
+                      >
+                        {board && (
+                          <div
+                            className="h-2 w-2 shrink-0 rounded-full"
+                            style={{ backgroundColor: board.color ?? '#3b82f6' }}
+                          />
+                        )}
+                        <span className="min-w-0 flex-1 truncate text-sm">
+                          {activity.title}
+                        </span>
+                        {dueDateLocal ? (
+                          <span className={cn(
+                            'shrink-0 text-xs',
+                            isOverdue ? 'font-semibold text-red-500' : 'text-muted-foreground',
+                          )}>
+                            {format(dueDateLocal, 'dd/MM')}
+                          </span>
+                        ) : (
+                          <span className="shrink-0 text-xs text-muted-foreground/50">—</span>
+                        )}
+                      </button>
+                    )
+                  })}
                 </div>
               )}
             </CardContent>
@@ -299,71 +280,3 @@ export function BoardsHomePage() {
 
 // ── Sub-component: Activity Section ──
 
-function ActivitySection({
-  title,
-  activities,
-  onActivityClick,
-}: {
-  title: string
-  activities: Activity[]
-  onActivityClick: (activity: Activity) => void
-}) {
-  return (
-    <div>
-      <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{title}</p>
-      <div className="space-y-1">
-        {activities.map((activity) => (
-          <ActivityRow key={activity.id} activity={activity} onClick={() => onActivityClick(activity)} />
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// ── Sub-component: Activity Row ──
-
-function ActivityRow({ activity, onClick }: { activity: Activity; onClick: () => void }) {
-  const priority = priorityConfig[activity.priority] ?? priorityConfig.medium
-  const board = (activity.column as { board?: { id: string; name: string; color: string | null; icon: string | null } })?.board
-  const columnTitle = (activity.column as { title?: string })?.title
-  const dueDateLocal = activity.dueDate ? parseDateLocal(activity.dueDate) : null
-  const isOverdue = dueDateLocal && isPast(dueDateLocal) && !activity.isCompleted
-
-  return (
-    <button
-      type="button"
-      className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left transition-colors hover:bg-accent"
-      onClick={onClick}
-    >
-      {board && (
-        <div
-          className="flex h-7 w-7 shrink-0 items-center justify-center rounded text-white text-[10px] font-bold"
-          style={{ backgroundColor: board.color ?? '#3b82f6' }}
-        >
-          {board.icon ?? board.name.charAt(0).toUpperCase()}
-        </div>
-      )}
-
-      <div className="min-w-0 flex-1">
-        <p className={cn('truncate text-sm', activity.isCompleted && 'line-through text-muted-foreground')}>
-          {activity.title}
-        </p>
-        <p className="truncate text-[11px] text-muted-foreground">
-          {board?.name}{columnTitle ? ` · ${columnTitle}` : ''}
-        </p>
-      </div>
-
-      <div className="flex shrink-0 items-center gap-2">
-        <Badge variant="secondary" className={cn('text-[10px] px-1.5', priority.className)}>
-          {priority.label}
-        </Badge>
-        {activity.dueDate && (
-          <span className={cn('flex items-center gap-1 text-[11px]', isOverdue ? 'text-red-500 font-semibold' : 'text-muted-foreground')}>
-            <Calendar className="h-3 w-3" />
-            {format(parseDateLocal(activity.dueDate), 'dd/MM')}
-          </span>
-        )}
-      </div>
-    </button>
-  )
-}
