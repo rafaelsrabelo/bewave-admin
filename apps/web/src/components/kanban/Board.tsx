@@ -8,10 +8,12 @@ import {
   useSensors,
   type DragStartEvent,
   type DragEndEvent,
+  type DragOverEvent,
 } from '@dnd-kit/core'
 import {
   SortableContext,
   horizontalListSortingStrategy,
+  arrayMove,
   useSortable,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -28,6 +30,8 @@ type BoardProps = {
   board: BoardType
   filterUserId?: string | null
 }
+
+type DragType = 'column' | 'activity' | null
 
 function SortableColumn({
   column,
@@ -59,7 +63,7 @@ function SortableColumn({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1,
+    opacity: isDragging ? 0.4 : 1,
   }
 
   return (
@@ -77,9 +81,36 @@ function SortableColumn({
   )
 }
 
+// Resolve any over target to a column ID
+function resolveColumnId(
+  overId: string | number,
+  overData: Record<string, unknown> | undefined,
+  columns: ColumnType[],
+): string | null {
+  // Direct column hit
+  if (overData?.type === 'sortable-column') return overData.columnId as string
+  if (overData?.type === 'column') return overData.columnId as string
+
+  // Activity hit — find which column it belongs to
+  const overActivity = overData?.activity as Activity | undefined
+  if (overActivity) return overActivity.columnId
+
+  // Try parsing sortable-col-{id}
+  const overIdStr = String(overId)
+  if (overIdStr.startsWith('sortable-col-')) return overIdStr.replace('sortable-col-', '')
+  if (overIdStr.startsWith('column-')) return overIdStr.replace('column-', '')
+
+  // Last resort: check if it matches a column id
+  const col = columns.find((c) => c.id === overIdStr)
+  if (col) return col.id
+
+  return null
+}
+
 export function Board({ board, filterUserId }: BoardProps) {
   const [activeActivity, setActiveActivity] = useState<Activity | null>(null)
   const [activeColumnId, setActiveColumnId] = useState<string | null>(null)
+  const [dragType, setDragType] = useState<DragType>(null)
   const [deleteColumnId, setDeleteColumnId] = useState<string | null>(null)
 
   const queryClient = useQueryClient()
@@ -104,44 +135,43 @@ export function Board({ board, filterUserId }: BoardProps) {
 
   function handleDragStart(event: DragStartEvent) {
     const { active } = event
+
+    if (active.data.current?.type === 'sortable-column') {
+      setActiveColumnId(active.data.current.columnId as string)
+      setDragType('column')
+      return
+    }
+
     const activity = active.data.current?.activity as Activity | undefined
     if (activity) {
       setActiveActivity(activity)
-      return
-    }
-    if (active.data.current?.type === 'sortable-column') {
-      setActiveColumnId(active.data.current.columnId as string)
+      setDragType('activity')
     }
   }
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
       const { active, over } = event
+      const currentDragType = dragType
+
       setActiveActivity(null)
       setActiveColumnId(null)
+      setDragType(null)
 
       if (!over) return
 
-      // Column reorder
-      if (active.data.current?.type === 'sortable-column') {
-        const activeColId = active.data.current.columnId as string
-        let overColId: string | null = null
-
-        if (over.data.current?.type === 'sortable-column') {
-          overColId = over.data.current.columnId as string
-        } else if (over.data.current?.type === 'column') {
-          overColId = over.data.current.columnId as string
-        }
+      // ── Column reorder ──
+      if (currentDragType === 'column') {
+        const activeColId = active.data.current?.columnId as string
+        const overColId = resolveColumnId(over.id, over.data.current as Record<string, unknown> | undefined, board.columns)
 
         if (!overColId || activeColId === overColId) return
 
         const oldIndex = board.columns.findIndex((c) => c.id === activeColId)
         const newIndex = board.columns.findIndex((c) => c.id === overColId)
-        if (oldIndex === -1 || newIndex === -1) return
+        if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) return
 
-        const newColumns = [...board.columns]
-        const [moved] = newColumns.splice(oldIndex, 1)
-        newColumns.splice(newIndex, 0, moved)
+        const newColumns = arrayMove(board.columns, oldIndex, newIndex)
 
         // Optimistic update
         queryClient.setQueryData(['board', board.id], (old: BoardType | undefined) => {
@@ -155,44 +185,47 @@ export function Board({ board, filterUserId }: BoardProps) {
         return
       }
 
-      // Activity move
-      const activityId = active.id as string
-      const activity = active.data.current?.activity as Activity | undefined
-      if (!activity) return
+      // ── Activity move ──
+      if (currentDragType === 'activity') {
+        const activityId = active.id as string
+        const activity = active.data.current?.activity as Activity | undefined
+        if (!activity) return
 
-      let targetColumnId: string
-      let targetPosition: number
+        let targetColumnId: string
+        let targetPosition: number
 
-      if (over.data.current?.type === 'column' || over.data.current?.type === 'sortable-column') {
-        targetColumnId = (over.data.current.columnId as string)
-        const targetColumn = board.columns.find((c) => c.id === targetColumnId)
-        targetPosition = targetColumn?.activities.length ?? 0
-      } else {
         const overActivity = over.data.current?.activity as Activity | undefined
-        if (!overActivity) return
-        targetColumnId = overActivity.columnId
-        targetPosition = overActivity.position
-      }
+        if (overActivity) {
+          targetColumnId = overActivity.columnId
+          targetPosition = overActivity.position
+        } else {
+          const colId = resolveColumnId(over.id, over.data.current as Record<string, unknown> | undefined, board.columns)
+          if (!colId) return
+          targetColumnId = colId
+          const targetColumn = board.columns.find((c) => c.id === targetColumnId)
+          targetPosition = targetColumn?.activities.length ?? 0
+        }
 
-      if (activity.columnId === targetColumnId && activity.position === targetPosition) return
+        if (activity.columnId === targetColumnId && activity.position === targetPosition) return
 
-      queryClient.setQueryData(['board', board.id], (old: BoardType | undefined) => {
-        if (!old) return old
-        const newCols = old.columns.map((col: ColumnType) => {
-          let activities = col.activities.filter((a: Activity) => a.id !== activityId)
-          if (col.id === targetColumnId) {
-            const movedActivity = { ...activity, columnId: targetColumnId, position: targetPosition }
-            activities.splice(targetPosition, 0, movedActivity)
-            activities = activities.map((a: Activity, i: number) => ({ ...a, position: i }))
-          }
-          return { ...col, activities }
+        queryClient.setQueryData(['board', board.id], (old: BoardType | undefined) => {
+          if (!old) return old
+          const newCols = old.columns.map((col: ColumnType) => {
+            let activities = col.activities.filter((a: Activity) => a.id !== activityId)
+            if (col.id === targetColumnId) {
+              const movedActivity = { ...activity, columnId: targetColumnId, position: targetPosition }
+              activities.splice(targetPosition, 0, movedActivity)
+              activities = activities.map((a: Activity, i: number) => ({ ...a, position: i }))
+            }
+            return { ...col, activities }
+          })
+          return { ...old, columns: newCols }
         })
-        return { ...old, columns: newCols }
-      })
 
-      moveActivity.mutate({ activityId, data: { columnId: targetColumnId, position: targetPosition } })
+        moveActivity.mutate({ activityId, data: { columnId: targetColumnId, position: targetPosition } })
+      }
     },
-    [board, queryClient, moveActivity, reorderColumns],
+    [board, queryClient, moveActivity, reorderColumns, dragType],
   )
 
   function handleCreateActivity(columnId: string, title: string) {
@@ -263,7 +296,7 @@ export function Board({ board, filterUserId }: BoardProps) {
             </div>
           ) : null}
           {activeColumn ? (
-            <div className="w-[280px] rounded-lg border border-border bg-muted/80 p-3 shadow-lg opacity-80">
+            <div className="w-[280px] rounded-lg border border-border bg-muted/80 p-3 shadow-lg">
               <p className="text-sm font-semibold">{activeColumn.title}</p>
               <p className="text-xs text-muted-foreground">{activeColumn.activities.length} atividades</p>
             </div>
