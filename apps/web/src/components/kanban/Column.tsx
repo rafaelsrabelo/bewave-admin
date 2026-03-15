@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useDroppable } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
-import { Plus, MoreHorizontal, Trash2 } from 'lucide-react'
+import { Plus, MoreHorizontal, Trash2, GripHorizontal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -21,6 +21,7 @@ type ColumnProps = {
   onToggleComplete?: (activityId: string, isCompleted: boolean) => void
   onUpdateTitle?: (columnId: string, title: string) => void
   onDelete?: (columnId: string) => void
+  dragHandleProps?: Record<string, unknown>
 }
 
 export function Column({
@@ -30,6 +31,7 @@ export function Column({
   onToggleComplete,
   onUpdateTitle,
   onDelete,
+  dragHandleProps,
 }: ColumnProps) {
   const [isAdding, setIsAdding] = useState(false)
   const [newTitle, setNewTitle] = useState('')
@@ -62,6 +64,15 @@ export function Column({
     <div className="flex h-full max-h-[calc(100vh-180px)] w-[280px] shrink-0 flex-col rounded-lg bg-muted/50">
       <div className="flex items-center justify-between px-3 py-2">
         <div className="flex items-center gap-2 min-w-0 flex-1">
+          {dragHandleProps && (
+            <button
+              type="button"
+              className="cursor-grab text-muted-foreground/50 hover:text-muted-foreground active:cursor-grabbing"
+              {...dragHandleProps}
+            >
+              <GripHorizontal className="h-4 w-4" />
+            </button>
+          )}
           {column.color && (
             <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: column.color }} />
           )}
