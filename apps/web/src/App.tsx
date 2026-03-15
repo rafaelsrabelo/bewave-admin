@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { AppRoutes } from '@/routes'
+import { AuthProvider } from '@/providers/AuthProvider'
 import { useUiStore } from '@/stores/ui.store'
 
 export function App() {
@@ -9,5 +10,9 @@ export function App() {
     document.documentElement.classList.toggle('dark', theme === 'dark')
   }, [theme])
 
-  return <AppRoutes />
+  return (
+    <AuthProvider>
+      <AppRoutes />
+    </AuthProvider>
+  )
 }
