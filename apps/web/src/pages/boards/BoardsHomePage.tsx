@@ -36,6 +36,10 @@ function getGreeting(): string {
   return 'Boa noite'
 }
 
+function parseDateLocal(dateStr: string): Date {
+  return new Date(dateStr.split('T')[0] + 'T12:00:00')
+}
+
 function groupActivities(activities: Activity[]) {
   const today: Activity[] = []
   const upcoming: Activity[] = []
@@ -44,12 +48,15 @@ function groupActivities(activities: Activity[]) {
   for (const a of activities) {
     if (!a.dueDate) {
       noDate.push(a)
-    } else if (isToday(new Date(a.dueDate))) {
-      today.push(a)
-    } else if (isFuture(new Date(a.dueDate))) {
-      upcoming.push(a)
     } else {
-      today.push(a) // overdue goes with "today"
+      const d = parseDateLocal(a.dueDate)
+      if (isToday(d)) {
+        today.push(a)
+      } else if (isFuture(d)) {
+        upcoming.push(a)
+      } else {
+        today.push(a) // overdue goes with "today"
+      }
     }
   }
 
@@ -319,7 +326,8 @@ function ActivityRow({ activity, onClick }: { activity: Activity; onClick: () =>
   const priority = priorityConfig[activity.priority] ?? priorityConfig.medium
   const board = (activity.column as { board?: { id: string; name: string; color: string | null; icon: string | null } })?.board
   const columnTitle = (activity.column as { title?: string })?.title
-  const isOverdue = activity.dueDate && isPast(new Date(activity.dueDate)) && !activity.isCompleted
+  const dueDateLocal = activity.dueDate ? parseDateLocal(activity.dueDate) : null
+  const isOverdue = dueDateLocal && isPast(dueDateLocal) && !activity.isCompleted
 
   return (
     <button
@@ -352,7 +360,7 @@ function ActivityRow({ activity, onClick }: { activity: Activity; onClick: () =>
         {activity.dueDate && (
           <span className={cn('flex items-center gap-1 text-[11px]', isOverdue ? 'text-red-500 font-semibold' : 'text-muted-foreground')}>
             <Calendar className="h-3 w-3" />
-            {format(new Date(activity.dueDate), 'dd/MM')}
+            {format(parseDateLocal(activity.dueDate), 'dd/MM')}
           </span>
         )}
       </div>

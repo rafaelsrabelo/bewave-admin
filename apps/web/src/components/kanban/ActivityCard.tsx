@@ -44,7 +44,8 @@ export function ActivityCard({ activity, onClick, onToggleComplete }: ActivityCa
   }
 
   const priority = priorityConfig[activity.priority] ?? priorityConfig.medium
-  const isOverdue = activity.dueDate && !activity.isCompleted && isPast(new Date(activity.dueDate))
+  const dueDateLocal = activity.dueDate ? new Date(activity.dueDate.split('T')[0] + 'T12:00:00') : null
+  const isOverdue = dueDateLocal && !activity.isCompleted && isPast(dueDateLocal)
   const commentCount = activity._count?.comments ?? 0
 
   return (
@@ -109,10 +110,10 @@ export function ActivityCard({ activity, onClick, onToggleComplete }: ActivityCa
                 {priority.label}
               </Badge>
 
-              {activity.dueDate && (
+              {dueDateLocal && (
                 <span className={cn('flex items-center gap-1 text-[10px]', isOverdue ? 'text-red-500' : 'text-muted-foreground')}>
                   <Calendar className="h-3 w-3" />
-                  {format(new Date(activity.dueDate), 'dd/MM')}
+                  {format(dueDateLocal, 'dd/MM')}
                 </span>
               )}
 
