@@ -29,6 +29,26 @@ enum FinanceType {
   expense
 }
 
+enum FinanceCategory {
+  tecnologia
+  marketing
+  atendimento
+  comercial
+  outros
+}
+
+enum PlanPeriod {
+  monthly
+  quarterly
+  yearly
+  free
+}
+
+enum PaymentStatus {
+  paid
+  pending
+}
+
 model User {
   id           String    @id @default(cuid())
   name         String
@@ -47,20 +67,50 @@ model User {
   @@map("users")
 }
 
+model Plan {
+  id        String     @id @default(cuid())
+  name      String
+  price     Int
+  period    PlanPeriod
+  isActive  Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  clients Client[]
+
+  @@map("plans")
+}
+
 model Client {
-  id             String       @id @default(cuid())
-  name           String
-  address        String?
-  phone          String?
-  email          String?
-  contractMonths Int          @default(12)
-  paid           Boolean      @default(false)
-  status         ClientStatus @default(lead)
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  deletedAt      DateTime?
+  id        String       @id @default(cuid())
+  name      String
+  address   String?
+  phone     String?
+  email     String?
+  status    ClientStatus @default(lead)
+  planId    String?
+  plan      Plan?        @relation(fields: [planId], references: [id])
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  deletedAt DateTime?
+
+  payments Payment[]
 
   @@map("clients")
+}
+
+model Payment {
+  id             String        @id @default(cuid())
+  client         Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId       String
+  amount         Int
+  referenceMonth DateTime      @db.Date
+  status         PaymentStatus @default(pending)
+  paidAt         DateTime?
+  createdAt      DateTime      @default(now())
+
+  @@unique([clientId, referenceMonth])
+  @@map("payments")
 }
 
 model Workspace {
@@ -139,13 +189,13 @@ model ActivityAssignee {
 }
 
 model FinanceEntry {
-  id          String      @id @default(cuid())
+  id          String          @id @default(cuid())
   type        FinanceType
   amount      Int
   description String
-  category    String?
-  date        DateTime    @db.Date
-  createdAt   DateTime    @default(now())
+  category    FinanceCategory
+  date        DateTime        @db.Date
+  createdAt   DateTime        @default(now())
 
   @@map("finance_entries")
 }
