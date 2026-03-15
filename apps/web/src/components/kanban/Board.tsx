@@ -12,8 +12,10 @@ import {
 import { useQueryClient } from '@tanstack/react-query'
 import { Column } from './Column'
 import { ActivityCard } from './ActivityCard'
-import { ActivityModal } from './ActivityModal'
-import { useCreateActivity, useUpdateActivity, useMoveActivity } from '@/hooks/useActivities'
+import { useCreateActivity, useMoveActivity, useToggleComplete } from '@/hooks/useActivities'
+import { useUpdateColumn, useRemoveColumn } from '@/hooks/useColumns'
+import { useKanbanStore } from '@/stores/kanban.store'
+import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
 import type { Board as BoardType, Activity, Column as ColumnType } from '@/services/boards.service'
 
 type BoardProps = {
@@ -22,13 +24,15 @@ type BoardProps = {
 
 export function Board({ board }: BoardProps) {
   const [activeActivity, setActiveActivity] = useState<Activity | null>(null)
-  const [editingActivity, setEditingActivity] = useState<Activity | null>(null)
-  const [modalOpen, setModalOpen] = useState(false)
+  const [deleteColumnId, setDeleteColumnId] = useState<string | null>(null)
 
   const queryClient = useQueryClient()
+  const setSelectedActivity = useKanbanStore((s) => s.setSelectedActivity)
   const createActivity = useCreateActivity(board.id)
-  const updateActivity = useUpdateActivity(board.id)
   const moveActivity = useMoveActivity(board.id)
+  const toggleComplete = useToggleComplete(board.id)
+  const updateColumn = useUpdateColumn(board.id)
+  const removeColumn = useRemoveColumn(board.id)
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -37,11 +41,8 @@ export function Board({ board }: BoardProps) {
   )
 
   function handleDragStart(event: DragStartEvent) {
-    const { active } = event
-    const activity = active.data.current?.activity as Activity | undefined
-    if (activity) {
-      setActiveActivity(activity)
-    }
+    const activity = event.active.data.current?.activity as Activity | undefined
+    if (activity) setActiveActivity(activity)
   }
 
   const handleDragEnd = useCallback(
@@ -69,11 +70,8 @@ export function Board({ board }: BoardProps) {
         targetPosition = overActivity.position
       }
 
-      if (activity.columnId === targetColumnId && activity.position === targetPosition) {
-        return
-      }
+      if (activity.columnId === targetColumnId && activity.position === targetPosition) return
 
-      // Optimistic update
       queryClient.setQueryData(['board', board.id], (old: BoardType | undefined) => {
         if (!old) return old
         const newColumns = old.columns.map((col: ColumnType) => {
@@ -98,16 +96,22 @@ export function Board({ board }: BoardProps) {
   }
 
   function handleActivityClick(activity: Activity) {
-    setEditingActivity(activity)
-    setModalOpen(true)
+    setSelectedActivity(activity.id)
   }
 
-  function handleSaveActivity(data: { title: string; description?: string; priority: string; category?: string }) {
-    if (editingActivity) {
-      updateActivity.mutate(
-        { activityId: editingActivity.id, data },
-        { onSettled: () => setModalOpen(false) },
-      )
+  function handleToggleComplete(activityId: string, isCompleted: boolean) {
+    toggleComplete.mutate({ activityId, isCompleted })
+  }
+
+  function handleUpdateColumnTitle(columnId: string, title: string) {
+    updateColumn.mutate({ columnId, data: { title } })
+  }
+
+  function handleDeleteColumn() {
+    if (deleteColumnId) {
+      removeColumn.mutate(deleteColumnId, {
+        onSettled: () => setDeleteColumnId(null),
+      })
     }
   }
 
@@ -126,25 +130,30 @@ export function Board({ board }: BoardProps) {
               column={column}
               onCreateActivity={handleCreateActivity}
               onActivityClick={handleActivityClick}
+              onToggleComplete={handleToggleComplete}
+              onUpdateTitle={handleUpdateColumnTitle}
+              onDelete={setDeleteColumnId}
             />
           ))}
         </div>
 
         <DragOverlay>
           {activeActivity ? (
-            <div className="w-72">
+            <div className="w-[280px]">
               <ActivityCard activity={activeActivity} />
             </div>
           ) : null}
         </DragOverlay>
       </DndContext>
 
-      <ActivityModal
-        open={modalOpen}
-        onOpenChange={setModalOpen}
-        activity={editingActivity}
-        onSave={handleSaveActivity}
-        loading={updateActivity.isPending}
+      <ConfirmDialog
+        open={!!deleteColumnId}
+        onOpenChange={(open) => !open && setDeleteColumnId(null)}
+        title="Deletar coluna"
+        description="Todos os cards desta coluna serão removidos. Esta ação não pode ser desfeita."
+        confirmLabel="Deletar"
+        loading={removeColumn.isPending}
+        onConfirm={handleDeleteColumn}
       />
     </>
   )
