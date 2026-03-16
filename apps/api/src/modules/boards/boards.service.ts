@@ -138,7 +138,13 @@ export class BoardsService {
 
     const isMember = board.members.some((m) => m.userId === userId)
     if (!isMember) {
-      throw new AppError('BOARD_ACCESS_DENIED', 'Você não é membro deste board', 403)
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { role: true },
+      })
+      if (user?.role !== 'admin') {
+        throw new AppError('BOARD_ACCESS_DENIED', 'Você não é membro deste board', 403)
+      }
     }
 
     return board
@@ -244,6 +250,13 @@ export class BoardsService {
     })
 
     if (!member) {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { role: true },
+      })
+      if (user?.role === 'admin') {
+        return { boardId, userId, role: 'admin' }
+      }
       throw new AppError('BOARD_ACCESS_DENIED', 'Você não é membro deste board', 403)
     }
 
@@ -255,6 +268,12 @@ export class BoardsService {
   }
 
   private static async assertAdmin(boardId: string, userId: string) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { role: true },
+    })
+    if (user?.role === 'admin') return
+
     const member = await this.getMember(boardId, userId)
     if (member.role !== 'admin') {
       throw new AppError('BOARD_ACCESS_DENIED', 'Apenas admins podem executar esta ação', 403)

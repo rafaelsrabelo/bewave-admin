@@ -24,6 +24,25 @@ export const listUsersSchema = z.object({
     .optional(),
 })
 
+export const updateProfileSchema = z.object({
+  name: z.string().min(2).max(255).optional(),
+  phone: z.string().optional(),
+  email: z.string().email().optional(),
+})
+
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string(),
+    newPassword: z.string().min(8),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: 'As senhas não coincidem',
+    path: ['confirmPassword'],
+  })
+
 export type CreateUserInput = z.infer<typeof createUserSchema>
 export type UpdateUserInput = z.infer<typeof updateUserSchema>
 export type ListUsersInput = z.infer<typeof listUsersSchema>
+export type UpdateProfileInput = z.infer<typeof updateProfileSchema>
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>

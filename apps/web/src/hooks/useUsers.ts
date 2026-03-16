@@ -67,3 +67,18 @@ export function useDeactivateUser() {
     },
   })
 }
+
+export function useRemoveUser() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: usersService.remove,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] })
+      toast.success('Usuário excluído permanentemente')
+    },
+    onError: () => {
+      toast.error('Erro ao excluir usuário')
+    },
+  })
+}

@@ -1,14 +1,21 @@
 import { api } from '@/lib/axios'
+import type { Plan } from '@/services/plans.service'
 
-type Client = {
+export type Client = {
   id: string
   name: string
   address: string | null
   phone: string | null
   email: string | null
-  contractMonths: number
-  paid: boolean
   status: 'lead' | 'active'
+  planId: string | null
+  plan: Pick<Plan, 'id' | 'name' | 'price' | 'period'> | null
+  payments: Array<{ id: string; status: 'paid' | 'pending'; referenceMonth: string }>
+  subscriptions?: Array<{
+    id: string
+    status: 'active' | 'overdue' | 'completed' | 'cancelled'
+    plan: { id: string; name: string }
+  }>
   createdAt: string
   deletedAt: string | null
 }
@@ -27,15 +34,14 @@ type CreateClientInput = {
   address?: string
   phone?: string
   email?: string
-  contractMonths?: number
-  paid?: boolean
   status?: 'lead' | 'active'
+  planId?: string
 }
 
-type UpdateClientInput = Partial<CreateClientInput>
+type UpdateClientInput = Partial<CreateClientInput> & { planId?: string | null }
 
 export const clientsService = {
-  async list(params?: { page?: number; limit?: number; status?: string; paid?: string }) {
+  async list(params?: { page?: number; limit?: number; status?: string }) {
     const response = await api.get<ClientsResponse>('/clients', { params })
     return response.data
   },

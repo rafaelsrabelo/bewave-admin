@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Plus, Kanban, CheckCircle2 } from 'lucide-react'
+import { Plus, Kanban, CheckCircle2, Circle, ListFilter } from 'lucide-react'
 import { format, isPast } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { Button } from '@/components/ui/button'
@@ -41,9 +41,12 @@ export function BoardsHomePage() {
   const [boardName, setBoardName] = useState('')
   const [boardColor, setBoardColor] = useState(BOARD_COLORS[0])
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null)
+  const [activityFilter, setActivityFilter] = useState<'all' | 'open' | 'completed'>('all')
 
   const { data: boards, isLoading: boardsLoading } = useMyBoards()
-  const { data: activities, isLoading: activitiesLoading } = useMyActivities({ isCompleted: false, limit: 15 })
+  const { data: activities, isLoading: activitiesLoading } = useMyActivities(
+    activityFilter === 'all' ? {} : { isCompleted: activityFilter === 'completed' },
+  )
   const { data: workspaces } = useWorkspaces()
   const createWorkspace = useCreateWorkspace()
   const createBoard = useCreateBoard()
@@ -113,26 +116,28 @@ export function BoardsHomePage() {
                   icon={Kanban}
                   title="Nenhum quadro"
                   description="Crie seu primeiro quadro"
-                  action={
+                  action={user?.role === 'admin' ? (
                     <Button size="sm" onClick={() => setDialogOpen(true)}>
                       <Plus className="mr-2 h-4 w-4" />
                       Criar quadro
                     </Button>
-                  }
+                  ) : undefined}
                 />
               ) : (
                 <div className="grid grid-cols-2 gap-3">
-                  {/* Create board button */}
-                  <button
-                    type="button"
-                    className="flex items-center gap-3 rounded-lg border-2 border-dashed border-muted-foreground/20 p-3 text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
-                    onClick={() => setDialogOpen(true)}
-                  >
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted">
-                      <Plus className="h-5 w-5" />
-                    </div>
-                    Criar quadro
-                  </button>
+                  {/* Create board button — admin only */}
+                  {user?.role === 'admin' && (
+                    <button
+                      type="button"
+                      className="flex items-center gap-3 rounded-lg border-2 border-dashed border-muted-foreground/20 p-3 text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+                      onClick={() => setDialogOpen(true)}
+                    >
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted">
+                        <Plus className="h-5 w-5" />
+                      </div>
+                      Criar quadro
+                    </button>
+                  )}
 
                   {boards.map((board) => (
                     <div key={board.id} className="group relative">
@@ -165,7 +170,34 @@ export function BoardsHomePage() {
         <div className="w-[40%] min-w-0">
           <Card>
             <CardHeader className="pb-4">
-              <CardTitle className="text-base">Minhas atividades</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-base">Minhas atividades</CardTitle>
+                {activities && (
+                  <Badge variant="secondary" className="text-xs">{activities.length}</Badge>
+                )}
+              </div>
+              <div className="mt-3 flex gap-1">
+                {([
+                  { key: 'all', label: 'Todas', icon: ListFilter },
+                  { key: 'open', label: 'Em aberto', icon: Circle },
+                  { key: 'completed', label: 'Concluídas', icon: CheckCircle2 },
+                ] as const).map(({ key, label, icon: Icon }) => (
+                  <button
+                    key={key}
+                    type="button"
+                    className={cn(
+                      'flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors',
+                      activityFilter === key
+                        ? 'bg-primary text-primary-foreground'
+                        : 'text-muted-foreground hover:bg-accent hover:text-foreground',
+                    )}
+                    onClick={() => setActivityFilter(key)}
+                  >
+                    <Icon className="h-3.5 w-3.5" />
+                    {label}
+                  </button>
+                ))}
+              </div>
             </CardHeader>
             <CardContent>
               {activitiesLoading ? (
@@ -177,7 +209,13 @@ export function BoardsHomePage() {
               ) : !activities || activities.length === 0 ? (
                 <div className="flex flex-col items-center py-8 text-center">
                   <CheckCircle2 className="mb-3 h-10 w-10 text-muted-foreground/30" />
-                  <p className="text-sm text-muted-foreground">Nenhuma atividade atribuída a você</p>
+                  <p className="text-sm text-muted-foreground">
+                    {activityFilter === 'completed'
+                      ? 'Nenhuma atividade concluída'
+                      : activityFilter === 'open'
+                        ? 'Nenhuma atividade em aberto'
+                        : 'Nenhuma atividade atribuída a você'}
+                  </p>
                 </div>
               ) : (
                 <div className="space-y-1">
@@ -190,16 +228,26 @@ export function BoardsHomePage() {
                       <button
                         key={activity.id}
                         type="button"
-                        className="flex w-full items-center gap-3 rounded-lg px-2 py-2.5 text-left transition-colors hover:bg-accent"
+                        className={cn(
+                          'flex w-full items-center gap-3 rounded-lg px-2 py-2.5 text-left transition-colors hover:bg-accent',
+                          activity.isCompleted && 'opacity-60',
+                        )}
                         onClick={() => handleActivityClick(activity)}
                       >
-                        {board && (
+                        {activity.isCompleted ? (
+                          <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-500" />
+                        ) : board ? (
                           <div
                             className="h-2 w-2 shrink-0 rounded-full"
                             style={{ backgroundColor: board.color ?? '#3b82f6' }}
                           />
+                        ) : (
+                          <Circle className="h-4 w-4 shrink-0 text-muted-foreground/40" />
                         )}
-                        <span className="min-w-0 flex-1 truncate text-sm">
+                        <span className={cn(
+                          'min-w-0 flex-1 truncate text-sm',
+                          activity.isCompleted && 'line-through',
+                        )}>
                           {activity.title}
                         </span>
                         {dueDateLocal ? (

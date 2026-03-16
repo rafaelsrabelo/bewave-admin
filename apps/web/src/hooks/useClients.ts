@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { clientsService } from '@/services/clients.service'
 import { toast } from 'sonner'
 
-export function useClients(params?: { page?: number; limit?: number; status?: string; paid?: string }) {
+export function useClients(params?: { page?: number; limit?: number; status?: string }) {
   return useQuery({
     queryKey: ['clients', params],
     queryFn: () => clientsService.list(params),

@@ -70,15 +70,19 @@ model User {
 }
 
 model Plan {
-  id        String     @id @default(cuid())
-  name      String
-  price     Int
-  period    PlanPeriod
-  isActive  Boolean    @default(true)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id             String     @id @default(cuid())
+  name           String
+  description    String?
+  price          Int
+  durationMonths Int        @default(1)
+  period         PlanPeriod
+  isActive       Boolean    @default(true)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  deletedAt      DateTime?
 
-  clients Client[]
+  clients       Client[]
+  subscriptions ClientSubscription[]
 
   @@map("plans")
 }
@@ -96,7 +100,8 @@ model Client {
   updatedAt DateTime     @updatedAt
   deletedAt DateTime?
 
-  payments Payment[]
+  payments      Payment[]
+  subscriptions ClientSubscription[]
 
   @@map("clients")
 }
@@ -236,5 +241,50 @@ model FinanceEntry {
   date        DateTime        @db.Date
   createdAt   DateTime        @default(now())
 
+  subscriptionPayment SubscriptionPayment?
+
   @@map("finance_entries")
+}
+
+enum SubscriptionStatus {
+  active
+  overdue
+  completed
+  cancelled
+}
+
+model ClientSubscription {
+  id        String             @id @default(cuid())
+  clientId  String
+  planId    String
+  startDate DateTime           @db.Date
+  endDate   DateTime           @db.Date
+  status    SubscriptionStatus @default(active)
+  notes     String?
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  client   Client              @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  plan     Plan                @relation(fields: [planId], references: [id])
+  payments SubscriptionPayment[]
+
+  @@map("client_subscriptions")
+}
+
+model SubscriptionPayment {
+  id             String    @id @default(cuid())
+  subscriptionId String
+  month          Int
+  dueDate        DateTime  @db.Date
+  paidAt         DateTime?
+  amount         Int
+  notes          String?
+  financeEntryId String?   @unique
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  subscription ClientSubscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  financeEntry FinanceEntry?      @relation(fields: [financeEntryId], references: [id])
+
+  @@map("subscription_payments")
 }

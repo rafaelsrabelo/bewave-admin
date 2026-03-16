@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt'
 import { prisma } from '../../lib/prisma.js'
 import { AppError } from '../../shared/errors/app-error.js'
 import { getPagination, buildMeta } from '../../shared/utils/pagination.js'
-import type { CreateUserInput, UpdateUserInput, ListUsersInput } from './users.schema.js'
+import type { CreateUserInput, UpdateUserInput, ListUsersInput, UpdateProfileInput, ChangePasswordInput } from './users.schema.js'
 
 const USER_SELECT = {
   id: true,
@@ -92,6 +92,53 @@ export class UsersService {
     await prisma.user.update({
       where: { id },
       data: { isActive: false },
+    })
+  }
+
+  static async remove(id: string) {
+    await this.findById(id)
+
+    await prisma.user.delete({
+      where: { id },
+    })
+  }
+
+  static async updateProfile(userId: string, data: UpdateProfileInput) {
+    if (data.email) {
+      const existing = await prisma.user.findFirst({
+        where: { email: data.email, id: { not: userId } },
+      })
+      if (existing) {
+        throw new AppError('EMAIL_ALREADY_EXISTS', 'Email já cadastrado', 409)
+      }
+    }
+
+    return prisma.user.update({
+      where: { id: userId },
+      data,
+      select: USER_SELECT,
+    })
+  }
+
+  static async changePassword(userId: string, data: ChangePasswordInput) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    })
+
+    if (!user) {
+      throw new AppError('USER_NOT_FOUND', 'Usuário não encontrado', 404)
+    }
+
+    const isValid = await bcrypt.compare(data.currentPassword, user.passwordHash)
+    if (!isValid) {
+      throw new AppError('INVALID_PASSWORD', 'Senha atual incorreta', 400)
+    }
+
+    const passwordHash = await bcrypt.hash(data.newPassword, 10)
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: { passwordHash },
     })
   }
 }

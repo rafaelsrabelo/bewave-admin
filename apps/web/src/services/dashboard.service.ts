@@ -1,7 +1,7 @@
 import { api } from '@/lib/axios'
 
 type ClientsResponse = {
-  data: Array<{ id: string; status: string; paid: boolean }>
+  data: Array<{ id: string; status: string; planId: string | null }>
   meta: { total: number }
 }
 
@@ -24,16 +24,22 @@ type ActivitiesResponse = {
   }>
 }
 
+type PaymentsResponse = {
+  data: Array<{ id: string; status: string }>
+}
+
 export const dashboardService = {
   async getClientsStats() {
-    const response = await api.get<ClientsResponse>('/clients', {
-      params: { limit: 999 },
-    })
-    const clients = response.data.data
+    const [clientsRes, paymentsRes] = await Promise.all([
+      api.get<ClientsResponse>('/clients', { params: { limit: 999 } }),
+      api.get<PaymentsResponse>('/payments', { params: { status: undefined } }),
+    ])
+    const clients = clientsRes.data.data
+    const payments = paymentsRes.data.data
     const active = clients.filter((c) => c.status === 'active')
     const leads = clients.filter((c) => c.status === 'lead')
-    const paid = active.filter((c) => c.paid)
-    const pending = active.filter((c) => !c.paid)
+    const paid = payments.filter((p) => p.status === 'paid')
+    const pending = payments.filter((p) => p.status === 'pending')
 
     return {
       totalActive: active.length,

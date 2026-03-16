@@ -18,15 +18,15 @@ import {
 import { PageHeader } from '@/components/shared/PageHeader'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { useClient, useCreateClient, useUpdateClient } from '@/hooks/useClients'
+import { usePlans } from '@/hooks/usePlans'
 
 const clientFormSchema = z.object({
   name: z.string().min(2, 'Mínimo de 2 caracteres'),
   address: z.string().optional(),
   phone: z.string().optional(),
   email: z.string().email('Email inválido').or(z.literal('')).optional(),
-  contractMonths: z.coerce.number().int().positive('Deve ser positivo'),
-  paid: z.boolean(),
   status: z.enum(['lead', 'active']),
+  planId: z.string().optional(),
 })
 
 type ClientFormData = z.infer<typeof clientFormSchema>
@@ -37,8 +37,11 @@ export function ClientFormPage() {
   const isEditing = !!id
 
   const { data: client, isLoading: isLoadingClient } = useClient(id ?? '')
+  const { data: plansData } = usePlans({ isActive: 'true' })
   const createMutation = useCreateClient()
   const updateMutation = useUpdateClient()
+
+  const activePlans = plansData?.data ?? []
 
   const {
     register,
@@ -50,14 +53,12 @@ export function ClientFormPage() {
   } = useForm<ClientFormData>({
     resolver: zodResolver(clientFormSchema),
     defaultValues: {
-      contractMonths: 12,
-      paid: false,
       status: 'lead',
     },
   })
 
   const statusValue = watch('status')
-  const paidValue = watch('paid')
+  const planIdValue = watch('planId')
 
   useEffect(() => {
     if (client && isEditing) {
@@ -66,18 +67,22 @@ export function ClientFormPage() {
         address: client.address ?? undefined,
         phone: client.phone ?? undefined,
         email: client.email ?? undefined,
-        contractMonths: client.contractMonths,
-        paid: client.paid,
         status: client.status,
+        planId: client.planId ?? undefined,
       })
     }
   }, [client, isEditing, reset])
 
   function onSubmit(data: ClientFormData) {
+    const payload = {
+      ...data,
+      planId: data.planId || undefined,
+    }
+
     if (isEditing && id) {
-      updateMutation.mutate({ id, data })
+      updateMutation.mutate({ id, data: payload })
     } else {
-      createMutation.mutate(data)
+      createMutation.mutate(payload)
     }
   }
 
@@ -124,14 +129,6 @@ export function ClientFormPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="contractMonths">Tempo de Contrato (meses)</Label>
-                <Input id="contractMonths" type="number" {...register('contractMonths')} />
-                {errors.contractMonths && (
-                  <p className="text-sm text-destructive">{errors.contractMonths.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
                 <Label>Status *</Label>
                 <Select
                   value={statusValue}
@@ -147,17 +144,24 @@ export function ClientFormPage() {
                 </Select>
               </div>
 
-              <div className="flex items-center gap-2 pt-6">
-                <input
-                  type="checkbox"
-                  id="paid"
-                  checked={paidValue}
-                  onChange={(e) => setValue('paid', e.target.checked)}
-                  className="h-4 w-4 rounded border-border"
-                />
-                <Label htmlFor="paid" className="cursor-pointer">
-                  Mensalidade paga
-                </Label>
+              <div className="space-y-2">
+                <Label>Plano</Label>
+                <Select
+                  value={planIdValue ?? 'none'}
+                  onValueChange={(value) => setValue('planId', value === 'none' ? undefined : value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione um plano" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Nenhum</SelectItem>
+                    {activePlans.map((plan) => (
+                      <SelectItem key={plan.id} value={plan.id}>
+                        {plan.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 

@@ -102,7 +102,7 @@ export function LoginPage() {
         <div className="mx-auto w-full max-w-md">
           {/* Logo */}
           <div className="mb-12">
-            <img src={logoDark} alt="Bewave" className="hidden h-10 dark:block" />
+            <img src={logoWhite} alt="Bewave" className="hidden h-10 dark:block" />
             <img src={logoWhite} alt="Bewave" className="block h-10 dark:hidden" />
           </div>
 

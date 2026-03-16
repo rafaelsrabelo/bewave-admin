@@ -15,6 +15,9 @@ import { commentsRoutes } from './modules/comments/comments.routes.js'
 import { financeRoutes } from './modules/finance/finance.routes.js'
 import { plansRoutes } from './modules/plans/plans.routes.js'
 import { paymentsRoutes } from './modules/payments/payments.routes.js'
+import { profileRoutes } from './modules/profile/profile.routes.js'
+import { dashboardRoutes } from './modules/dashboard/dashboard.routes.js'
+import { subscriptionsRoutes } from './modules/subscriptions/subscriptions.routes.js'
 import { env } from './env.js'
 
 export async function buildApp() {
@@ -82,6 +85,9 @@ export async function buildApp() {
   await app.register(financeRoutes, { prefix: '/api/v1/finance' })
   await app.register(plansRoutes, { prefix: '/api/v1/plans' })
   await app.register(paymentsRoutes, { prefix: '/api/v1/payments' })
+  await app.register(profileRoutes, { prefix: '/api/v1/me' })
+  await app.register(dashboardRoutes, { prefix: '/api/v1/dashboard' })
+  await app.register(subscriptionsRoutes, { prefix: '/api/v1/subscriptions' })
 
   return app
 }

@@ -12,7 +12,6 @@ export class ClientsService {
     const where = {
       deletedAt: null,
       ...(filters.status && { status: filters.status }),
-      ...(filters.paid !== undefined && { paid: filters.paid }),
     }
 
     const [items, total] = await prisma.$transaction([
@@ -20,6 +19,21 @@ export class ClientsService {
         where,
         skip,
         take,
+        include: {
+          plan: { select: { id: true, name: true, price: true, period: true } },
+          payments: {
+            orderBy: { referenceMonth: 'desc' },
+            take: 1,
+            select: { id: true, status: true, referenceMonth: true },
+          },
+          subscriptions: {
+            where: { status: { in: ['active', 'overdue'] } },
+            take: 1,
+            include: {
+              plan: { select: { id: true, name: true } },
+            },
+          },
+        },
         orderBy: { createdAt: 'desc' },
       }),
       prisma.client.count({ where }),
@@ -31,6 +45,18 @@ export class ClientsService {
   static async findById(id: string) {
     const client = await prisma.client.findFirst({
       where: { id, deletedAt: null },
+      include: {
+        plan: true,
+        payments: {
+          orderBy: { referenceMonth: 'asc' },
+        },
+        subscriptions: {
+          orderBy: { createdAt: 'desc' },
+          include: {
+            plan: { select: { id: true, name: true, price: true, durationMonths: true } },
+          },
+        },
+      },
     })
 
     if (!client) {
@@ -41,12 +67,23 @@ export class ClientsService {
   }
 
   static async create(data: CreateClientInput) {
-    return prisma.client.create({ data })
+    return prisma.client.create({
+      data,
+      include: {
+        plan: { select: { id: true, name: true, price: true, period: true } },
+      },
+    })
   }
 
   static async update(id: string, data: UpdateClientInput) {
     await this.findById(id)
-    return prisma.client.update({ where: { id }, data })
+    return prisma.client.update({
+      where: { id },
+      data,
+      include: {
+        plan: { select: { id: true, name: true, price: true, period: true } },
+      },
+    })
   }
 
   static async remove(id: string) {

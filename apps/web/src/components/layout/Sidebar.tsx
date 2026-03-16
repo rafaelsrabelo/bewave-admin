@@ -8,19 +8,22 @@ import {
   PanelLeftClose,
   PanelLeft,
   CreditCard,
-  LogOut,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/stores/auth.store'
 import { useUiStore } from '@/stores/ui.store'
-import { useLogout } from '@/hooks/useAuth'
-import logoDark from '@/assets/logo-dark.png'
 import logoWhite from '@/assets/logo-white.png'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
-const navItems = [
+type NavItem = {
+  label: string
+  href: string
+  icon: typeof LayoutDashboard
+}
+
+const adminNavItems: NavItem[] = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { label: 'Usuários', href: '/users', icon: Users },
   { label: 'Clientes', href: '/clients', icon: UserRound },
@@ -29,11 +32,17 @@ const navItems = [
   { label: 'Financeiro', href: '/finance', icon: DollarSign },
 ]
 
+const memberNavItems: NavItem[] = [
+  { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { label: 'Quadros', href: '/boards', icon: Kanban },
+]
+
 export function Sidebar() {
   const location = useLocation()
   const user = useAuthStore((s) => s.user)
   const { sidebarOpen, toggleSidebar } = useUiStore()
-  const logoutMutation = useLogout()
+
+  const navItems = user?.role === 'admin' ? adminNavItems : memberNavItems
 
   return (
     <aside
@@ -46,7 +55,7 @@ export function Sidebar() {
       <div className="flex h-14 items-center justify-between px-4">
         {sidebarOpen && (
           <div className="flex items-center">
-            <img src={logoDark} alt="Bewave" className="hidden h-7 dark:block" />
+            <img src={logoWhite} alt="Bewave" className="hidden h-7 dark:block" />
             <img src={logoWhite} alt="Bewave" className="block h-7 dark:hidden" />
           </div>
         )}
@@ -100,7 +109,7 @@ export function Sidebar() {
       {/* Footer — User */}
       <div className={cn(
         'border-t border-sidebar-border p-3',
-        !sidebarOpen && 'flex flex-col items-center gap-2',
+        !sidebarOpen && 'flex flex-col items-center',
       )}>
         <div className={cn('flex items-center gap-3', !sidebarOpen && 'justify-center')}>
           <Avatar className="h-8 w-8 shrink-0">
@@ -109,39 +118,14 @@ export function Sidebar() {
             </AvatarFallback>
           </Avatar>
           {sidebarOpen && (
-            <>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-sidebar-foreground">
-                  {user?.name ?? 'Usuário'}
-                </p>
-                <p className="truncate text-xs text-muted-foreground">{user?.email}</p>
-              </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => logoutMutation.mutate()}
-                className="h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive"
-              >
-                <LogOut className="h-4 w-4" />
-              </Button>
-            </>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium text-sidebar-foreground">
+                {user?.name ?? 'Usuário'}
+              </p>
+              <p className="truncate text-xs text-muted-foreground">{user?.email}</p>
+            </div>
           )}
         </div>
-        {!sidebarOpen && (
-          <Tooltip delayDuration={0}>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => logoutMutation.mutate()}
-                className="h-8 w-8 text-muted-foreground hover:text-destructive"
-              >
-                <LogOut className="h-4 w-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="right">Sair</TooltipContent>
-          </Tooltip>
-        )}
       </div>
     </aside>
   )

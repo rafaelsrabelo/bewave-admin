@@ -37,7 +37,7 @@ export const listActivitiesSchema = z.object({
   boardId: z.string().optional(),
   assigneeId: z.string().optional(),
   priority: z.enum(['low', 'medium', 'high', 'urgent']).optional(),
-  isCompleted: z.coerce.boolean().optional(),
+  isCompleted: z.string().transform((v) => v === 'true').optional(),
   page: z.coerce.number().int().positive().default(1),
   limit: z.coerce.number().int().positive().max(100).default(50),
 })

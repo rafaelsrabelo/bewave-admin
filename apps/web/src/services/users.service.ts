@@ -34,6 +34,18 @@ type UpdateUserInput = {
   phone?: string
 }
 
+type UpdateProfileInput = {
+  name?: string
+  email?: string
+  phone?: string
+}
+
+type ChangePasswordInput = {
+  currentPassword: string
+  newPassword: string
+  confirmPassword: string
+}
+
 export const usersService = {
   async list(params?: { page?: number; limit?: number; role?: string; isActive?: string }) {
     const response = await api.get<UsersResponse>('/users', { params })
@@ -57,5 +69,23 @@ export const usersService = {
 
   async deactivate(id: string) {
     await api.delete(`/users/${id}`)
+  },
+
+  async remove(id: string) {
+    await api.delete(`/users/${id}/permanent`)
+  },
+
+  async getMe() {
+    const response = await api.get<UserResponse>('/me')
+    return response.data.data
+  },
+
+  async updateProfile(data: UpdateProfileInput) {
+    const response = await api.put<UserResponse>('/me', data)
+    return response.data.data
+  },
+
+  async changePassword(data: ChangePasswordInput) {
+    await api.patch('/me/password', data)
   },
 }

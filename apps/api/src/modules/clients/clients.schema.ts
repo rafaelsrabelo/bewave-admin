@@ -5,9 +5,8 @@ export const createClientSchema = z.object({
   address: z.string().optional(),
   phone: z.string().optional(),
   email: z.string().email().optional(),
-  contractMonths: z.number().int().positive().default(12),
-  paid: z.boolean().default(false),
   status: z.enum(['lead', 'active']).default('lead'),
+  planId: z.string().optional(),
 })
 
 export const updateClientSchema = z.object({
@@ -15,19 +14,14 @@ export const updateClientSchema = z.object({
   address: z.string().optional(),
   phone: z.string().optional(),
   email: z.string().email().optional(),
-  contractMonths: z.number().int().positive().optional(),
-  paid: z.boolean().optional(),
   status: z.enum(['lead', 'active']).optional(),
+  planId: z.string().nullable().optional(),
 })
 
 export const listClientsSchema = z.object({
   page: z.coerce.number().int().positive().default(1),
   limit: z.coerce.number().int().positive().max(100).default(20),
   status: z.enum(['lead', 'active']).optional(),
-  paid: z
-    .string()
-    .transform((v) => v === 'true')
-    .optional(),
 })
 
 export type CreateClientInput = z.infer<typeof createClientSchema>

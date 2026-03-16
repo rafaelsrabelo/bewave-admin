@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { PrivateRoute } from './PrivateRoute'
+import { AdminRoute } from './AdminRoute'
 import { PublicRoute } from './PublicRoute'
 import { AppShell } from '@/components/layout/AppShell'
 import { LoginPage } from '@/pages/auth/LoginPage'
@@ -14,6 +15,7 @@ import { PlanFormPage } from '@/pages/plans/PlanFormPage'
 import { BoardsHomePage } from '@/pages/boards/BoardsHomePage'
 import { BoardPage } from '@/pages/boards/BoardPage'
 import { FinancePage } from '@/pages/finance/FinancePage'
+import { ProfilePage } from '@/pages/profile/ProfilePage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 
 export function AppRoutes() {
@@ -25,20 +27,26 @@ export function AppRoutes() {
 
       <Route element={<PrivateRoute />}>
         <Route element={<AppShell />}>
+          {/* Rotas acessíveis por qualquer role */}
           <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/users" element={<UsersPage />} />
-          <Route path="/users/new" element={<UserFormPage />} />
-          <Route path="/users/:id/edit" element={<UserFormPage />} />
-          <Route path="/clients" element={<ClientsPage />} />
-          <Route path="/clients/new" element={<ClientFormPage />} />
-          <Route path="/clients/:id" element={<ClientDetailPage />} />
-          <Route path="/clients/:id/edit" element={<ClientFormPage />} />
-          <Route path="/plans" element={<PlansPage />} />
-          <Route path="/plans/new" element={<PlanFormPage />} />
-          <Route path="/plans/:id/edit" element={<PlanFormPage />} />
           <Route path="/boards" element={<BoardsHomePage />} />
           <Route path="/boards/:id" element={<BoardPage />} />
-          <Route path="/finance" element={<FinancePage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+
+          {/* Rotas restritas a admin */}
+          <Route element={<AdminRoute />}>
+            <Route path="/users" element={<UsersPage />} />
+            <Route path="/users/new" element={<UserFormPage />} />
+            <Route path="/users/:id/edit" element={<UserFormPage />} />
+            <Route path="/clients" element={<ClientsPage />} />
+            <Route path="/clients/new" element={<ClientFormPage />} />
+            <Route path="/clients/:id" element={<ClientDetailPage />} />
+            <Route path="/clients/:id/edit" element={<ClientFormPage />} />
+            <Route path="/plans" element={<PlansPage />} />
+            <Route path="/plans/new" element={<PlanFormPage />} />
+            <Route path="/plans/:id/edit" element={<PlanFormPage />} />
+            <Route path="/finance" element={<FinancePage />} />
+          </Route>
         </Route>
       </Route>
 
