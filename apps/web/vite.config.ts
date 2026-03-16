@@ -19,4 +19,7 @@ export default defineConfig({
       },
     },
   },
+  preview: {
+    allowedHosts: ['bewave-admin-frontend.onrender.com'],
+  },
 })

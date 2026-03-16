@@ -4,7 +4,7 @@ import { useAuthStore } from '@/stores/auth.store'
 const AUTH_ROUTES = ['/auth/login', '/auth/refresh', '/auth/logout']
 
 export const api = axios.create({
-  baseURL: '/api/v1',
+  baseURL: import.meta.env.VITE_API_URL ?? '/api/v1',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ api.interceptors.response.use(
       isRefreshing = true
 
       try {
-        const { data } = await axios.post('/api/v1/auth/refresh', null, {
+        const { data } = await axios.post(`${import.meta.env.VITE_API_URL ?? '/api/v1'}/auth/refresh`, null, {
           withCredentials: true,
         })
         const newToken = data.data.accessToken
