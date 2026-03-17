@@ -12,8 +12,8 @@ export class AuthController {
       path: '/',
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60, // 7 days
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      maxAge: 30 * 24 * 60 * 60, // 30 days
     })
 
     return reply.status(200).send({
@@ -43,8 +43,8 @@ export class AuthController {
       path: '/',
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60,
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      maxAge: 30 * 24 * 60 * 60, // 30 days
     })
 
     return reply.status(200).send({

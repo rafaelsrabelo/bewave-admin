@@ -7,7 +7,7 @@ import { AppError } from '../../shared/errors/app-error.js'
 import { env } from '../../env.js'
 
 const REFRESH_TOKEN_PREFIX = 'refresh_token:'
-const REFRESH_TOKEN_TTL = 7 * 24 * 60 * 60 // 7 days in seconds
+const REFRESH_TOKEN_TTL = 30 * 24 * 60 * 60 // 30 days in seconds
 
 export class AuthService {
   static async login(email: string, password: string, app: FastifyInstance) {
